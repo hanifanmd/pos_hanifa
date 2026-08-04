@@ -26,13 +26,45 @@
         background: #ffffff;
         overflow: hidden;
     }
+    
+    /* Product Image Hover & Cursor FX */
+    .img-preview-container {
+        position: relative;
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 5px 15px rgba(235, 107, 133, 0.12);
+    }
     .product-detail-img {
         width: 100%;
         height: 280px;
         object-fit: cover;
         border-radius: 16px;
-        box-shadow: 0 5px 15px rgba(235, 107, 133, 0.12);
+        transition: transform 0.4s ease;
     }
+    .img-preview-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 117, 140, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    .img-preview-container:hover .product-detail-img {
+        transform: scale(1.05);
+    }
+    .img-preview-container:hover .img-preview-overlay {
+        opacity: 1;
+    }
+
     .info-label {
         font-size: 0.85rem;
         text-transform: uppercase;
@@ -109,10 +141,15 @@
                 <div class="card custom-card p-4 p-md-5">
                     <div class="row align-items-center g-4">
                         
-                        <!-- Kolom Foto -->
+                        <!-- Kolom Foto (Bisa di-klik) -->
                         <div class="col-md-5 text-center">
                             @if($produk->foto)
-                                <img src="{{ asset('storage/' . $produk->foto) }}" class="product-detail-img" alt="{{ $produk->nama }}">
+                                <div class="img-preview-container" data-bs-toggle="modal" data-bs-target="#imageZoomModal">
+                                    <img src="{{ asset('storage/' . $produk->foto) }}" class="product-detail-img" alt="{{ $produk->nama }}">
+                                    <div class="img-preview-overlay">
+                                        <i class="bi bi-zoom-in fs-4 me-2"></i> Klik untuk Perbesar
+                                    </div>
+                                </div>
                             @else
                                 <div class="bg-light d-flex align-items-center justify-content-center product-detail-img text-muted">
                                     <i class="bi bi-image fs-1"></i>
@@ -177,5 +214,22 @@
 
     </div>
 </div>
+
+<!-- Modal Pop-up Zoom Gambar -->
+@if($produk->foto)
+<div class="modal fade" id="imageZoomModal" tabindex="-1" aria-labelledby="imageZoomModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-dark ms-2" id="imageZoomModalLabel">🌸 {{ $produk->nama }}</h5>
+                <button type="button" class="btn-close me-1" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <img src="{{ asset('storage/' . $produk->foto) }}" class="img-fluid rounded-3 shadow-sm" style="max-height: 80vh; object-fit: contain;" alt="{{ $produk->nama }}">
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 @endsection

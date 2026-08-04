@@ -83,26 +83,44 @@
         background: #4a1525;
         color: #ffffff;
     }
+
+    /* --- BASE ACTION BUTTON STYLE (TAMBAHAN UTAMA) --- */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 14px;        /* Beri ruang napas agar tidak menciut */
+        font-size: 0.875rem;       /* Ukuran font seragam */
+        line-height: 1.5;
+        text-decoration: none !important; /* Hapus garis bawah link */
+        border-radius: 8px;
+        border: none;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;       /* Mencegah teks terpotong turun ke bawah */
+    }
+
+    /* Varian Warna Tombol */
     .btn-detail-custom {
         background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
-        border: none;
-        color: #fff;
-        border-radius: 8px;
-        font-weight: 500;
+        color: #ffffff !important;
     }
-    .btn-edit-custom {
+    
+    .btn-edit {
         background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%);
-        border: none;
-        color: #fff;
-        border-radius: 8px;
-        font-weight: 500;
+        color: #ffffff !important;
     }
+
     .btn-delete-custom {
         background: linear-gradient(135deg, #d90429 0%, #ef233c 100%);
-        border: none;
-        color: #fff;
-        border-radius: 8px;
-        font-weight: 500;
+        color: #ffffff !important;
+    }
+
+    /* Hover effect seragam */
+    .btn-action:hover {
+        opacity: 0.9;
+        color: #ffffff !important;
+        transform: translateY(-1px);
     }
 </style>
 
@@ -193,21 +211,26 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-inline-flex gap-1 align-items-center justify-content-center">
+                                    <!-- Tombol Detail selalu muncul untuk semua status -->
                                     <a href="{{ route('penjualan.show', $sale) }}" class="btn btn-detail-custom btn-sm px-3">Detail</a>
                                     
-                                    @can('update', $sale)
-                                    <a href="{{ route('penjualan.edit', $sale) }}" class="btn btn-edit-custom btn-sm px-3">Edit</a>
-                                    @endcan
-                                    
-                                    @can('delete', $sale)
-                                    <form action="{{ route('penjualan.destroy', $sale) }}" method="POST" class="d-inline m-0">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-delete-custom btn-sm px-3" onclick="return confirm('Apakah anda yakin akan menghapus penjualan ini?')">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                    @endcan
+                                    <!-- Tombol Edit & Hapus HANYA muncul jika status belum completed -->
+                                    @if(strtolower($sale->status) !== 'completed')
+                                        @can('view', $sale)
+                                    <a href="{{ route('penjualan.edit', $sale) }}" class="btn-action btn-edit">
+                                        Edit
+                                    </a>
+                                    @endcan                                    
+                                        @can('delete', $sale)
+                                        <form action="{{ route('penjualan.destroy', $sale) }}" method="POST" class="d-inline m-0">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-delete-custom btn-sm px-3" onclick="return confirm('Apakah anda yakin akan menghapus penjualan ini?')">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                        @endcan
+                                    @endif
                                 </div>
                             </td>
                         </tr>
