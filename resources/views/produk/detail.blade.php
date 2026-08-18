@@ -6,23 +6,23 @@
 
 @include('layouts.navbar')
 
-<!-- Custom Colorful Styling for Detail (Pink Theme) -->
+<!-- Custom Magenta Theme Styling for Detail -->
 <style>
     .page-wrapper {
-        background-color: #fff5f7;
+        background-color: #fff9fb;
         min-height: 100vh;
         padding: 2rem 0;
     }
     .hero-banner-detail {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: #a8204d; /* Disesuaikan ke warna magenta/maroon elegan */
         border-radius: 16px;
         color: #fff;
-        box-shadow: 0 10px 20px rgba(255, 117, 140, 0.25);
+        box-shadow: 0 10px 20px rgba(168, 32, 77, 0.2);
     }
     .custom-card {
         border: none;
         border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(235, 107, 133, 0.08);
+        box-shadow: 0 10px 25px rgba(168, 32, 77, 0.08);
         background: #ffffff;
         overflow: hidden;
     }
@@ -33,7 +33,7 @@
         cursor: pointer;
         overflow: hidden;
         border-radius: 16px;
-        box-shadow: 0 5px 15px rgba(235, 107, 133, 0.12);
+        box-shadow: 0 5px 15px rgba(168, 32, 77, 0.12);
     }
     .product-detail-img {
         width: 100%;
@@ -48,7 +48,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(255, 117, 140, 0.3);
+        background: rgba(168, 32, 77, 0.4);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -76,41 +76,41 @@
     .info-value {
         font-size: 1.1rem;
         font-weight: 700;
-        color: #59404c;
+        color: #4a3b42;
     }
     .badge-price-buy {
-        background-color: #ffe6eb;
-        color: #d6336c;
+        background-color: #fce8ed;
+        color: #901a40;
         padding: 6px 12px;
         border-radius: 8px;
         font-weight: 600;
     }
     .badge-price-sell {
-        background-color: #fce4ec;
-        color: #c2185b;
+        background-color: #f7d3df;
+        color: #a8204d;
         padding: 6px 12px;
         border-radius: 8px;
         font-weight: 600;
     }
     .badge-stock {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: #a8204d;
         color: white;
         padding: 6px 14px;
         border-radius: 50px;
         font-weight: 600;
     }
     .btn-back-custom {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: #a8204d;
         border: none;
         color: #fff;
         font-weight: 600;
         border-radius: 50px;
         padding: 0.6rem 2.5rem;
-        box-shadow: 0 4px 10px rgba(255, 117, 140, 0.3);
+        box-shadow: 0 4px 10px rgba(168, 32, 77, 0.3);
         transition: all 0.3s ease;
     }
     .btn-back-custom:hover {
-        opacity: 0.9;
+        background: #901a40;
         color: white;
         transform: translateY(-1px);
     }
@@ -122,14 +122,14 @@
         <!-- Hero Banner / Header -->
         <div class="hero-banner-detail p-4 p-md-5 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div>
-                <span class="badge bg-white text-dark px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm">
+                <span class="badge bg-white px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm" style="color: #a8204d !important;">
                     🔍 Rincian Produk
                 </span>
                 <h1 class="display-6 fw-bold mb-1 text-white">Informasi Produk</h1>
                 <p class="text-white mb-0 opacity-75">Melihat detail lengkap data inventaris produk.</p>
             </div>
             <div class="mt-3 mt-md-0">
-                <a href="{{ route('produk.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm">
+                <a href="{{ route('produk.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" style="color: #a8204d;">
                     <i class="bi bi-arrow-left me-1"></i> Kembali
                 </a>
             </div>
@@ -188,7 +188,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="info-label">Diimput Oleh</div>
-                                    <div class="info-value mt-1" style="color: #ff758c;">
+                                    <div class="info-value mt-1" style="color: #a8204d;">
                                         <i class="bi bi-person-circle me-1"></i> {{ $produk->user->name ?? 'Admin' }}
                                     </div>
                                 </div>
@@ -200,7 +200,7 @@
                                     <i class="bi bi-arrow-left me-1"></i> Kembali ke Daftar
                                 </a>
                                 @can('update', $produk)
-                                <a href="{{ route('produk.edit', $produk) }}" class="btn text-white fw-semibold rounded-pill px-4" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+                                <a href="{{ route('produk.edit', $produk) }}" class="btn text-white fw-semibold rounded-pill px-4" style="background: #e0a800;">
                                     <i class="bi bi-pencil-square me-1"></i> Edit
                                 </a>
                                 @endcan
@@ -221,7 +221,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
             <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold text-dark ms-2" id="imageZoomModalLabel">🌸 {{ $produk->nama }}</h5>
+                <h5 class="modal-title fw-bold text-dark ms-2" id="imageZoomModalLabel" style="color: #a8204d !important;">🌸 {{ $produk->nama }}</h5>
                 <button type="button" class="btn-close me-1" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center p-3">

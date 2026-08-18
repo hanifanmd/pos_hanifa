@@ -6,28 +6,28 @@
 
 @include('layouts.navbar')
 
-<!-- Custom Colorful Styling for Sales Detail (Pink Theme) -->
+<!-- Custom Colorful Styling for Sales Detail (Maroon & Magenta Theme) -->
 <style>
     .page-wrapper {
-        background-color: #fff5f7;
+        background-color: #fcf5f7;
         min-height: 100vh;
         padding: 2rem 0;
     }
     .hero-banner-sales {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: linear-gradient(135deg, #802040 0%, #9b2246 100%);
         border-radius: 16px;
         color: #fff;
-        box-shadow: 0 10px 20px rgba(255, 117, 140, 0.25);
+        box-shadow: 0 10px 20px rgba(128, 32, 64, 0.25);
     }
     .custom-card {
         border: none;
         border-radius: 16px;
-        box-shadow: 0 5px 15px rgba(235, 107, 133, 0.08);
+        box-shadow: 0 5px 15px rgba(155, 34, 70, 0.08);
         background: #ffffff;
         overflow: hidden;
     }
     .table-custom thead {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: linear-gradient(135deg, #802040 0%, #9b2246 100%);
         color: white;
     }
     .table-custom thead th {
@@ -42,11 +42,11 @@
         height: 60px;
         object-fit: cover;
         border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(235, 107, 133, 0.15);
+        box-shadow: 0 2px 6px rgba(155, 34, 70, 0.15);
     }
     .badge-total {
-        background-color: #fce4ec;
-        color: #c2185b;
+        background-color: #fce8ee;
+        color: #9b2246;
         padding: 8px 16px;
         border-radius: 12px;
         font-weight: 700;
@@ -56,14 +56,14 @@
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        color: #88586c;
+        color: #70304a;
         font-weight: 600;
         margin-bottom: 0.2rem;
     }
     .info-value {
         font-size: 1.05rem;
         font-weight: 700;
-        color: #59404c;
+        color: #581845;
     }
 </style>
 
@@ -74,13 +74,13 @@
         <div class="hero-banner-sales p-4 p-md-5 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div>
                 <span class="badge bg-white text-dark px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm">
-                    🧾 Transaksi POS
+                    🌸 Transaksi POS
                 </span>
                 <h1 class="display-6 fw-bold mb-1 text-white">Rincian Penjualan</h1>
                 <p class="text-white mb-0 opacity-75">Informasi lengkap transaksi dan daftar item produk yang dibeli.</p>
             </div>
             <div class="mt-3 mt-md-0">
-                <a href="{{ route('penjualan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm">
+                <a href="{{ route('penjualan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" style="color: #802040;">
                     <i class="bi bi-arrow-left me-1"></i> Kembali
                 </a>
             </div>
@@ -91,14 +91,14 @@
             <div class="row align-items-center">
                 <div class="col-md-4 mb-3 mb-md-0">
                     <div class="info-label">Kasir / Petugas</div>
-                    <div class="info-value" style="color: #ff758c;">
+                    <div class="info-value" style="color: #9b2246;">
                         <i class="bi bi-person-circle me-1"></i> {{ $sale->user->name ?? 'Kasir' }}
                     </div>
                 </div>
                 <div class="col-md-4 mb-3 mb-md-0">
                     <div class="info-label">Tanggal Transaksi</div>
                     <div class="info-value">
-                        <i class="bi bi-calendar-event me-1 text-muted"></i> {{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}
+                        <i class="bi bi-calendar-event me-1" style="color: #9b2246;"></i> {{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}
                     </div>
                 </div>
                 <div class="col-md-4 text-md-end">
@@ -112,8 +112,8 @@
 
         <!-- Tabel Item Produk yang Dibeli -->
         <div class="card custom-card">
-            <div class="card-header bg-white border-0 py-3 px-4 fw-bold fs-5" style="color: #59404c;">
-                <i class="bi bi-cart-check me-2" style="color: #ff758c;"></i> Item Produk Terjual
+            <div class="card-header bg-white border-0 py-3 px-4 fw-bold fs-5" style="color: #581845;">
+                <i class="bi bi-cart-check me-2" style="color: #9b2246;"></i> Item Produk Terjual
             </div>
             <div class="table-responsive">
                 <table class="table table-custom table-hover align-middle mb-0">
@@ -142,13 +142,13 @@
                                 <span class="fw-bold text-dark fs-6">{{ $item->produk->nama ?? 'Produk Dihapus' }}</span>
                             </td>
                             <td class="text-end pe-4">
-                                <span class="fw-semibold" style="color: #c2185b;">Rp {{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</span>
+                                <span class="fw-semibold" style="color: #9b2246;">Rp {{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</span>
                             </td>
                         </tr>
                         @empty
                         <tr>
                             <td colspan="4" class="text-center py-5">
-                                <div class="text-muted fs-5">Tidak ada item produk dalam transaksi ini.</div>
+                                <div class="text-muted fs-5"><i class="bi bi-inbox fs-1 d-block mb-2" style="color: #9b2246;"></i> Tidak ada item produk dalam transaksi ini.</div>
                             </td>
                         </tr>
                         @endforelse
@@ -158,7 +158,7 @@
 
             <!-- Card Footer dengan Tombol Kembali -->
             <div class="card-footer bg-white border-0 py-4 px-4 text-end">
-                <a href="{{ route('penjualan.index') }}" class="btn rounded-pill px-4 fw-semibold text-white" style="background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);">
+                <a href="{{ route('penjualan.index') }}" class="btn rounded-pill px-4 fw-semibold text-white" style="background: linear-gradient(135deg, #802040 0%, #9b2246 100%);">
                     Kembali ke Daftar Penjualan
                 </a>
             </div>

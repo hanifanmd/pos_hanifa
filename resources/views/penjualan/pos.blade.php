@@ -6,35 +6,35 @@
 
 @include('layouts.navbar')
 
-<!-- Custom Colorful Styling for POS (Pink Theme) -->
+<!-- Custom Colorful Styling for POS (Magenta/Maroon Theme) -->
 <style>
     .page-wrapper {
-        background-color: #fff0f3;
+        background-color: #fff9fb;
         min-height: 100vh;
         padding: 2rem 0;
     }
     .hero-banner-pos {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: #a8204d; /* Disesuaikan ke warna magenta/maroon elegan */
         border-radius: 16px;
         color: #fff;
-        box-shadow: 0 10px 20px rgba(255, 117, 140, 0.25);
+        box-shadow: 0 10px 20px rgba(168, 32, 77, 0.2);
     }
     .custom-card {
         border: none;
         border-radius: 16px;
-        box-shadow: 0 5px 15px rgba(255, 105, 135, 0.08);
+        box-shadow: 0 5px 15px rgba(168, 32, 77, 0.08);
         background: #ffffff;
         overflow: hidden;
     }
     .product-item-card {
-        border: 1px solid #ffd1dc;
+        border: 1px solid #f2c7d4;
         border-radius: 12px;
         transition: all 0.2s ease;
         background: #ffffff;
     }
     .product-item-card:hover {
-        border-color: #ff4d6d;
-        box-shadow: 0 4px 12px rgba(255, 77, 109, 0.15);
+        border-color: #a8204d;
+        box-shadow: 0 4px 12px rgba(168, 32, 77, 0.15);
         transform: translateY(-1px);
     }
     .product-img {
@@ -45,8 +45,8 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     .table-cart thead {
-        background: #ffe5ec;
-        color: #6b213a;
+        background: #fce8ed;
+        color: #901a40;
     }
     .table-cart thead th {
         border: none;
@@ -58,32 +58,32 @@
     .total-display {
         font-size: 1.5rem;
         font-weight: 800;
-        color: #d90429;
+        color: #a8204d;
     }
     .btn-checkout {
-        background: linear-gradient(135deg, #e63946 0%, #ff4d6d 100%);
+        background: #a8204d;
         border: none;
         color: white;
         font-weight: 600;
         border-radius: 50px;
         padding: 0.7rem 1.5rem;
-        box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+        box-shadow: 0 4px 10px rgba(168, 32, 77, 0.3);
         transition: all 0.3s ease;
     }
     .btn-checkout:hover {
-        opacity: 0.9;
+        background: #901a40;
         color: white;
         transform: translateY(-1px);
     }
     .search-input {
         border-radius: 50px;
         padding: 0.75rem 1.25rem;
-        border: 1px solid #ffd1dc;
-        background-color: #fff9fa;
+        border: 1px solid #f2c7d4;
+        background-color: #fffdfd;
     }
     .search-input:focus {
-        border-color: #ff4d6d;
-        box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.15);
+        border-color: #a8204d;
+        box-shadow: 0 0 0 3px rgba(168, 32, 77, 0.15);
         background-color: #ffffff;
     }
 </style>
@@ -102,14 +102,14 @@
         <!-- Hero Banner -->
         <div class="hero-banner-pos p-4 p-md-4 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div>
-                <span class="badge bg-white text-danger px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm">
+                <span class="badge bg-white px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm" style="color: #a8204d !important;">
                     ⚡ Kasir Point of Sale
                 </span>
                 <h1 class="h3 fw-bold mb-1 text-white">Transaksi Penjualan Baru</h1>
                 <p class="text-white mb-0 opacity-75 small">Pilih produk di sebelah kiri dan kelola keranjang belanja di sebelah kanan.</p>
             </div>
             <div class="mt-3 mt-md-0">
-                <a href="{{ route('penjualan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm text-danger">
+                <a href="{{ route('penjualan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" style="color: #a8204d;">
                     <i class="bi bi-clock-history me-1"></i> Riwayat Penjualan
                 </a>
             </div>
@@ -121,7 +121,7 @@
             <div class="col-md-6">
                 <div class="card custom-card h-100">
                     <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-grid-fill text-danger me-2"></i> Katalog Produk</h5>
+                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-grid-fill me-2" style="color: #a8204d;"></i> Katalog Produk</h5>
                         <!-- Form Pencarian -->
                         <form method="GET" action="{{ route('penjualan.create') }}">
                             <div class="input-group">
@@ -158,7 +158,7 @@
                                             @endif
                                             <div>
                                                 <div class="fw-bold text-dark small">{{ $product->nama }}</div>
-                                                <div class="text-danger small fw-semibold">Rp {{ number_format($product->harga_jual, 0, ',', '.') }}</div>
+                                                <div class="small fw-semibold" style="color: #a8204d;">Rp {{ number_format($product->harga_jual, 0, ',', '.') }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -171,7 +171,7 @@
 
                                     <!-- Tombol Tambah (+) -->
                                     <div class="col-2">
-                                        <button class="btn btn-danger btn-sm w-100 fw-bold {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}" style="background: linear-gradient(135deg, #e63946 0%, #ff4d6d 100%); border: none;" title="Tambah ke Keranjang">
+                                        <button class="btn btn-sm w-100 fw-bold text-white {{ $sale->status === 'COMPLETED' ? 'disabled' : '' }}" style="background: #a8204d; border: none;" title="Tambah ke Keranjang">
                                             <i class="bi bi-plus-lg"></i>
                                         </button>
                                     </div>
@@ -179,7 +179,7 @@
                             </form>
                             @empty
                             <div class="text-center py-5 text-muted">
-                                <i class="bi bi-box-seam fs-1 d-mb-2 text-danger"></i>
+                                <i class="bi bi-box-seam fs-1 d-mb-2" style="color: #a8204d;"></i>
                                 <p class="mb-0">Produk tidak ditemukan.</p>
                             </div>
                             @endforelse
@@ -193,7 +193,7 @@
                 <div class="card custom-card h-100 d-flex flex-column justify-content-between">
                     <div>
                         <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-cart3 text-danger me-2"></i> Keranjang Belanja</h5>
+                            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-cart3 me-2" style="color: #a8204d;"></i> Keranjang Belanja</h5>
                         </div>
 
                         <div class="card-body px-0 py-3">
@@ -224,12 +224,12 @@
                                                            onchange="this.form.submit()">
                                                 </form>
                                             </td>
-                                            <td class="fw-semibold text-danger small">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                            <td class="fw-semibold small" style="color: #a8204d;">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                                             <td class="text-end pe-4">
                                                 @can('delete', $item)
                                                 <form method="POST" action="{{ route('itempenjualan.destroy', $item->id) }}" class="d-inline">
                                                     @csrf @method('DELETE')
-                                                    <button class="btn btn-outline-danger btn-sm border-0" title="Hapus Item">
+                                                    <button class="btn btn-sm border-0" style="color: #a8204d;" title="Hapus Item">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
@@ -239,7 +239,7 @@
                                         @empty
                                         <tr>
                                             <td colspan="5" class="text-center py-5 text-muted">
-                                                <i class="bi bi-cart-x fs-2 d-block mb-2 text-danger opacity-50"></i>
+                                                <i class="bi bi-cart-x fs-2 d-block mb-2 opacity-50" style="color: #a8204d;"></i>
                                                 Keranjang belanja masih kosong
                                             </td>
                                         </tr>
@@ -285,7 +285,7 @@
                               class="mt-2">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-outline-danger w-100 rounded-pill py-2 small fw-semibold">
+                            <button class="btn w-100 rounded-pill py-2 small fw-semibold" style="border: 1px solid #a8204d; color: #a8204d;">
                                 <i class="bi bi-x-circle me-1"></i> Batalkan Transaksi
                             </button>
                         </form>

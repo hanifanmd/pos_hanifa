@@ -6,29 +6,29 @@
 
 @include('layouts.navbar')
 
-<!-- Custom Flower Shop Pink Styling for Produk Cards -->
+<!-- Custom Magenta Theme Styling for Produk Cards -->
 <style>
     .page-wrapper {
-        background-color: #fffafb;
+        background-color: #fff9fb;
         min-height: 100vh;
         padding: 2rem 0;
     }
     .hero-banner-product {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: #a8204d; /* Disesuaikan ke warna magenta/maroon elegan */
         border-radius: 20px;
         color: #fff;
-        box-shadow: 0 10px 25px rgba(255, 117, 140, 0.25);
+        box-shadow: 0 10px 25px rgba(168, 32, 77, 0.2);
     }
     .search-box {
         background: #fff;
         border-radius: 16px;
-        box-shadow: 0 5px 20px rgba(255, 182, 193, 0.15);
-        border: 1px solid #ffe3e8;
+        box-shadow: 0 5px 20px rgba(168, 32, 77, 0.08);
+        border: 1px solid #f2c7d4;
     }
     
     /* Product Card Styling */
     .product-card {
-        border: 1px solid #ffe8ee;
+        border: 1px solid #f7d3df;
         border-radius: 20px;
         background: #ffffff;
         transition: all 0.3s ease-in-out;
@@ -37,15 +37,15 @@
     }
     .product-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 15px 30px rgba(255, 117, 140, 0.2);
-        border-color: #ff758c;
+        box-shadow: 0 15px 30px rgba(168, 32, 77, 0.15);
+        border-color: #a8204d;
     }
     .product-img-wrapper {
         position: relative;
         width: 100%;
         height: 220px;
         overflow: hidden;
-        background-color: #fff0f3;
+        background-color: #fff4f7;
     }
     .product-card-img {
         width: 100%;
@@ -64,7 +64,7 @@
         right: 12px;
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(4px);
-        color: #d63384;
+        color: #a8204d;
         font-weight: 700;
         font-size: 0.75rem;
         padding: 6px 14px;
@@ -73,16 +73,16 @@
     }
     .badge-user {
         font-size: 0.75rem;
-        background-color: #fff0f3;
-        color: #c2185b;
+        background-color: #fff4f7;
+        color: #a8204d;
         border-radius: 50px;
         padding: 4px 10px;
         display: inline-block;
     }
     .price-tag-buy {
         font-size: 0.75rem;
-        color: #880e4f;
-        background-color: #fce4ec;
+        color: #a8204d;
+        background-color: #fce8ed;
         padding: 2px 8px;
         border-radius: 6px;
     }
@@ -95,14 +95,14 @@
     /* Buttons */
     .btn-create-product {
         background: #ffffff;
-        color: #ff758c;
+        color: #a8204d;
         font-weight: bold;
         border-radius: 50px;
         transition: all 0.3s ease;
     }
     .btn-create-product:hover {
-        background: #4a3b42;
-        color: #ffffff;
+        background: #f7d3df;
+        color: #901a40;
     }
     .btn-action {
         border-radius: 10px;
@@ -146,7 +146,7 @@
         <!-- Hero Banner Floral Theme -->
         <div class="hero-banner-product p-4 p-md-5 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div>
-                <span class="badge bg-white text-danger px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm">
+                <span class="badge bg-white px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm" style="color: #a8204d !important;">
                     🌸 Manajemen Persediaan Toko Bunga
                 </span>
                 <h1 class="display-6 fw-bold mb-1 text-white">Etalase Produk</h1>
@@ -180,7 +180,7 @@
         <div class="card p-2 mb-4 search-box">
             <form action="{{ route('produk.index') }}" method="GET">
                 <div class="input-group">
-                    <span class="input-group-text bg-transparent border-0 text-danger ps-3">
+                    <span class="input-group-text bg-transparent border-0 ps-3" style="color: #a8204d;">
                         <i class="bi bi-search"></i>
                     </span>
                     <input 
@@ -190,7 +190,7 @@
                         class="form-control border-0 bg-transparent py-2 px-2 shadow-none"
                         placeholder="Cari nama produk bunga..."
                     >
-                    <button class="btn btn-primary px-4 fw-semibold rounded-pill" type="submit" style="background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%); border: none;">
+                    <button class="btn px-4 fw-semibold rounded-pill text-white" type="submit" style="background: #a8204d; border: none;">
                         Cari
                     </button>
                     @if(request('search'))
@@ -272,7 +272,7 @@
                 <div class="col-12">
                     <div class="card p-5 text-center border-0 rounded-4 shadow-sm" style="background: #ffffff;">
                         <div class="text-muted fs-5">
-                            <i class="bi bi-flower1 display-4 text-danger opacity-50 d-block mb-3"></i>
+                            <i class="bi bi-flower1 display-4 opacity-50 d-block mb-3" style="color: #a8204d;"></i>
                             Belum ada produk bunga yang tersedia.
                         </div>
                     </div>

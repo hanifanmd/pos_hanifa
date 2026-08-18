@@ -6,36 +6,36 @@
 
 @include('layouts.navbar')
 
-<!-- Custom Colorful Styling for Penjualan (Pink Theme) -->
+<!-- Custom Colorful Styling for Penjualan (Exact Maroon Theme) -->
 <style>
     .page-wrapper {
-        background-color: #fff0f3;
+        background-color: #fcf5f7;
         min-height: 100vh;
         padding: 2rem 0;
     }
     .hero-banner-sale {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: linear-gradient(135deg, #802040 0%, #9b2246 100%);
         border-radius: 16px;
-        color: #4a1525;
-        box-shadow: 0 10px 20px rgba(255, 117, 140, 0.25);
+        color: #ffffff;
+        box-shadow: 0 10px 20px rgba(128, 32, 64, 0.25);
     }
     .hero-banner-sale .text-muted-custom {
-        color: #6b213a !important;
+        color: #f7d6e0 !important;
     }
     .custom-card {
         border: none;
         border-radius: 16px;
-        box-shadow: 0 5px 15px rgba(255, 105, 135, 0.08);
+        box-shadow: 0 5px 15px rgba(155, 34, 70, 0.08);
         background: #ffffff;
         overflow: hidden;
     }
     .search-box {
         background: #fff;
         border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(255, 105, 135, 0.05);
+        box-shadow: 0 4px 10px rgba(155, 34, 70, 0.05);
     }
     .table-custom thead {
-        background: linear-gradient(135deg, #e63946 0%, #ff4d6d 100%);
+        background: linear-gradient(135deg, #802040 0%, #9b2246 100%);
         color: white;
     }
     .table-custom thead th {
@@ -46,73 +46,73 @@
         font-size: 0.85rem;
     }
     .badge-total-bayar {
-        background-color: #ffe5ec;
-        color: #d90429;
+        background-color: #fce8ee;
+        color: #9b2246;
         padding: 6px 12px;
         border-radius: 8px;
         font-weight: 700;
         font-size: 0.9rem;
     }
     .badge-method {
-        background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+        background: linear-gradient(135deg, #9b2246 0%, #b5179e 100%);
         color: white;
         padding: 5px 12px;
         border-radius: 50px;
         font-weight: 600;
         font-size: 0.8rem;
-        box-shadow: 0 2px 6px rgba(247, 37, 133, 0.3);
+        box-shadow: 0 2px 6px rgba(155, 34, 70, 0.3);
     }
     .badge-status {
-        background: linear-gradient(135deg, #ff70a6 0%, #ff9770 100%);
+        background: linear-gradient(135deg, #802040 0%, #c71585 100%);
         color: white;
         padding: 5px 12px;
         border-radius: 50px;
         font-weight: 600;
         font-size: 0.8rem;
-        box-shadow: 0 2px 6px rgba(255, 112, 166, 0.3);
+        box-shadow: 0 2px 6px rgba(128, 32, 64, 0.3);
     }
     .btn-create-sale {
         background: #ffffff;
-        color: #d90429;
+        color: #9b2246;
         font-weight: bold;
         border-radius: 50px;
         border: none;
         transition: all 0.3s ease;
     }
     .btn-create-sale:hover {
-        background: #4a1525;
+        background: #4a1024;
         color: #ffffff;
     }
 
-    /* --- BASE ACTION BUTTON STYLE (TAMBAHAN UTAMA) --- */
+    /* --- BASE ACTION BUTTON STYLE --- */
     .btn-action {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 6px 14px;        /* Beri ruang napas agar tidak menciut */
-        font-size: 0.875rem;       /* Ukuran font seragam */
+        padding: 6px 14px;
+        font-size: 0.875rem;
         line-height: 1.5;
-        text-decoration: none !important; /* Hapus garis bawah link */
+        text-decoration: none !important;
         border-radius: 8px;
         border: none;
         font-weight: 500;
         transition: all 0.2s ease-in-out;
-        white-space: nowrap;       /* Mencegah teks terpotong turun ke bawah */
+        white-space: nowrap;
     }
 
     /* Varian Warna Tombol */
     .btn-detail-custom {
-        background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+        background: linear-gradient(135deg, #9b2246 0%, #c71585 100%);
         color: #ffffff !important;
     }
     
     .btn-edit {
-        background: linear-gradient(135deg, #f77f00 0%, #fcbf49 100%);
+        background: linear-gradient(135deg, #b5179e 0%, #7209b7 100%);
         color: #ffffff !important;
     }
 
     .btn-delete-custom {
-        background: linear-gradient(135deg, #d90429 0%, #ef233c 100%);
+        background: linear-gradient(135deg, #802040 0%, #581845 100%);
         color: #ffffff !important;
     }
 
@@ -133,11 +133,11 @@
             </div>
         @endif
         
-        <!-- Hero Banner Colorful (Pink Theme) -->
+        <!-- Hero Banner Exact Maroon Theme -->
         <div class="hero-banner-sale p-4 p-md-5 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div>
-                <span class="badge bg-white text-danger px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm">
-                    💖 Laporan Transaksi
+                <span class="badge bg-white text-dark px-3 py-1 rounded-pill fw-bold mb-2 shadow-sm">
+                    🌸 Laporan Transaksi
                 </span>
                 <h1 class="display-6 fw-bold mb-1">Halaman Penjualan</h1>
                 <p class="text-muted-custom mb-0 fw-semibold">Kelola dan pantau seluruh transaksi penjualan harian dengan mudah.</p>
@@ -153,7 +153,7 @@
         <div class="card custom-card p-3 mb-4 search-box">
             <form action="{{ route('penjualan.index') }}" method="GET">
                 <div class="input-group">
-                    <span class="input-group-text bg-white border-0 text-danger ps-3">
+                    <span class="input-group-text bg-white border-0 text-dark ps-3">
                         <i class="bi bi-search"></i>
                     </span>
                     <input 
@@ -163,7 +163,7 @@
                         class="form-control border-0 bg-white py-2 px-2"
                         placeholder="Search penjualan..."
                     >
-                    <button class="btn btn-danger px-4 fw-semibold" type="submit" style="background: linear-gradient(135deg, #e63946 0%, #ff4d6d 100%); border: none;">
+                    <button class="btn px-4 fw-semibold text-white" type="submit" style="background: linear-gradient(135deg, #802040 0%, #9b2246 100%); border: none;">
                         Cari
                     </button>
                     @if(request('search'))
@@ -175,7 +175,7 @@
             </form>
         </div>
 
-        <!-- Table Card Colorful -->
+        <!-- Table Card Maroon -->
         <div class="card custom-card">
             <div class="table-responsive">
                 <table class="table table-custom table-hover align-middle mb-0">
@@ -195,10 +195,10 @@
                         <tr>
                             <th scope="row" class="ps-4 fw-bold text-muted">{{ $sales->firstItem() + $loop->index }}</th>
                             <td>
-                                <span class="fw-semibold text-dark"><i class="bi bi-calendar-event me-1 text-danger"></i> {{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}</span>
+                                <span class="fw-semibold text-dark"><i class="bi bi-calendar-event me-1" style="color: #9b2246;"></i> {{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}</span>
                             </td>
                             <td>
-                                <span class="fw-bold text-dark"><i class="bi bi-person-badge me-1 text-primary"></i> {{ $sale->user->name }}</span>
+                                <span class="fw-bold text-dark"><i class="bi bi-person-badge me-1" style="color: #802040;"></i> {{ $sale->user->name }}</span>
                             </td>
                             <td>
                                 <span class="badge-total-bayar">Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}</span>
@@ -211,16 +211,17 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-inline-flex gap-1 align-items-center justify-content-center">
-                                    <!-- Tombol Detail selalu muncul untuk semua status -->
+                                    <!-- Tombol Detail -->
                                     <a href="{{ route('penjualan.show', $sale) }}" class="btn btn-detail-custom btn-sm px-3">Detail</a>
                                     
-                                    <!-- Tombol Edit & Hapus HANYA muncul jika status belum completed -->
+                                    <!-- Tombol Edit & Hapus -->
                                     @if(strtolower($sale->status) !== 'completed')
                                         @can('view', $sale)
-                                    <a href="{{ route('penjualan.edit', $sale) }}" class="btn-action btn-edit">
-                                        Edit
-                                    </a>
-                                    @endcan                                    
+                                        <a href="{{ route('penjualan.edit', $sale) }}" class="btn-action btn-edit btn-sm px-3">
+                                            Edit
+                                        </a>
+                                        @endcan                                    
+                                        
                                         @can('delete', $sale)
                                         <form action="{{ route('penjualan.destroy', $sale) }}" method="POST" class="d-inline m-0">
                                             @csrf
@@ -237,7 +238,7 @@
                         @empty
                         <tr>
                             <td colspan="7" class="text-center py-5">
-                                <div class="text-muted fs-5"><i class="bi bi-inbox fs-1 d-block mb-2 text-danger"></i> Data Tidak Ditemukan</div>
+                                <div class="text-muted fs-5"><i class="bi bi-inbox fs-1 d-block mb-2" style="color: #9b2246;"></i> Data Tidak Ditemukan</div>
                             </td>
                         </tr>
                         @endforelse

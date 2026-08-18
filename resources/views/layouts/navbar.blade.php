@@ -96,6 +96,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link {{ Request::is('penjualan*') ? 'active' : '' }}" href="{{ route('penjualan.index') }}">Penjualan</a>
+            </li> 
+            <li class="nav-item">
+               <a class="nav-link {{ request()->routeIs('about') ? 'active fw-bold' : '' }}" href="{{ route('about') }}">Tentang Kami</a>
             </li>
           </ul>
 

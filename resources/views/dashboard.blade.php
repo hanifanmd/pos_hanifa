@@ -1,32 +1,28 @@
-<!-- memanggil file app.blade.php -->
 @extends('layouts.app')
 
-<!-- mengirimkan nilai ke tittle untuk ditampilkan -->
 @section('title', 'Ringkasan Hari Ini')
 
-<!-- batas awal isi konten -->
 @section('content')
 
 @include('layouts.navbar')
 
-<!-- Custom Colorful Styling for Dashboard (Pink Theme) -->
 <style>
     .page-wrapper {
-        background-color: #fff5f7;
+        background-color: #fdf2f5;
         min-height: 100vh;
         padding: 2rem 0;
     }
     .dashboard-header {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: linear-gradient(135deg, #a81c51 0%, #c4295d 100%);
         border-radius: 16px;
         color: #fff;
         padding: 2.5rem;
-        box-shadow: 0 10px 20px rgba(255, 117, 140, 0.25);
+        box-shadow: 0 10px 20px rgba(168, 28, 81, 0.25);
         margin-bottom: 2.5rem;
     }
     .section-title {
         font-weight: 700;
-        color: #4a3b4c;
+        color: #4a1d2d;
         font-size: 1.5rem;
         margin-bottom: 1.5rem;
         position: relative;
@@ -39,13 +35,13 @@
         bottom: 0;
         width: 50px;
         height: 4px;
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: linear-gradient(135deg, #a81c51 0%, #c4295d 100%);
         border-radius: 2px;
     }
     .custom-card {
         border: none;
         border-radius: 16px;
-        box-shadow: 0 5px 15px rgba(255, 117, 140, 0.08);
+        box-shadow: 0 5px 15px rgba(168, 28, 81, 0.08);
         background: #ffffff;
         overflow: hidden;
         transition: transform 0.3s ease;
@@ -54,19 +50,19 @@
         transform: translateY(-5px);
     }
     .card-header-custom {
-        background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 100%);
-        border-bottom: 1px solid rgba(255, 117, 140, 0.1);
+        background: linear-gradient(135deg, #fce8ef 0%, #f7d1de 100%);
+        border-bottom: 1px solid rgba(168, 28, 81, 0.1);
         font-weight: 600;
-        color: #6b4c58;
+        color: #6b1f3b;
         padding: 1.2rem;
     }
     .stat-value {
         font-weight: 800;
         font-size: 1.75rem;
-        color: #4a3b4c;
+        color: #a81c51;
     }
     .table-custom thead {
-        background: linear-gradient(135deg, #ff6b8b 0%, #ff8e53 100%);
+        background: linear-gradient(135deg, #a81c51 0%, #c4295d 100%);
         color: white;
     }
     .table-custom thead th {
@@ -85,14 +81,14 @@
         font-weight: 600;
     }
     .badge-stock-empty {
-        background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+        background: linear-gradient(135deg, #d90429 0%, #ef233c 100%);
         color: #fff;
         padding: 6px 14px;
         border-radius: 50px;
         font-weight: 600;
     }
     .badge-best-seller {
-        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        background: linear-gradient(135deg, #a81c51 0%, #c4295d 100%);
         color: #fff;
         padding: 6px 14px;
         border-radius: 50px;
@@ -103,7 +99,6 @@
 <div class="page-wrapper">
     <div class="container">
         
-        <!-- Header Banner -->
         <div class="dashboard-header text-center">
             <h1 class="display-5 fw-bold mb-2">Ringkasan Hari Ini</h1>
             <p class="text-white-50 fs-5 mb-0">
@@ -112,54 +107,52 @@
         </div>
 
         @can('__viewAny', App\Models\User::class)
-        <!-- Today's Sales Section -->
         <div class="mb-5">
             <h2 class="section-title">Penjualan hari ini</h2>
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="card custom-card text-center h-100">
                         <div class="card-header card-header-custom">
-                            <h5 class="mb-0 fw-bold" style="color: #d63384;"><i class="bi bi-wallet2 me-2"></i> Total Nilai Penjualan Hari Ini</h5>
+                            <h5 class="mb-0 fw-bold" style="color: #a81c51;"><i class="bi bi-wallet2 me-2"></i> Total Nilai Penjualan Hari Ini</h5>
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center py-4">
-                            <div class="stat-value" style="color: #e83e8c;">Rp. {{ number_format($ringkasan['total_penjualan'], 0, ',', '.') }}</div>
+                            <div class="stat-value">Rp. {{ number_format($ringkasan['total_penjualan'], 0, ',', '.') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card custom-card text-center h-100">
                         <div class="card-header card-header-custom">
-                            <h5 class="mb-0 fw-bold" style="color: #d63384;"><i class="bi bi-receipt me-2"></i> Jumlah penjualan Hari Ini</h5>
+                            <h5 class="mb-0 fw-bold" style="color: #a81c51;"><i class="bi bi-receipt me-2"></i> Jumlah penjualan Hari Ini</h5>
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center py-4">
-                            <div class="stat-value" style="color: #d63384;">{{ number_format($ringkasan['total_transaksi'], 0, ',', '.') }} Penjualan</div>
+                            <div class="stat-value">{{ number_format($ringkasan['total_transaksi'], 0, ',', '.') }} Penjualan</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Cash & Payment Status Section -->
         <div class="mb-5">
             <h2 class="section-title">Tunai dan status pembayaran</h2>
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="card custom-card text-center h-100">
                         <div class="card-header card-header-custom">
-                            <h5 class="mb-0 fw-bold" style="color: #e83e8c;"><i class="bi bi-cash-stack me-2"></i> Total Pembayaran Tunai</h5>
+                            <h5 class="mb-0 fw-bold" style="color: #a81c51;"><i class="bi bi-cash-stack me-2"></i> Total Pembayaran Tunai</h5>
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center py-4">
-                            <div class="stat-value" style="color: #e83e8c;">Rp. {{ number_format($ringkasan['total_cash'], 0, ',', '.') }}</div>
+                            <div class="stat-value">Rp. {{ number_format($ringkasan['total_cash'], 0, ',', '.') }}</div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card custom-card text-center h-100">
                         <div class="card-header card-header-custom">
-                            <h5 class="mb-0 fw-bold" style="color: #c75283;"><i class="bi bi-credit-card-2-front me-2"></i> Total Pembayaran Non-Tunai</h5>
+                            <h5 class="mb-0 fw-bold" style="color: #a81c51;"><i class="bi bi-credit-card-2-front me-2"></i> Total Pembayaran Non-Tunai</h5>
                         </div>
                         <div class="card-body d-flex align-items-center justify-content-center py-4">
-                            <div class="stat-value" style="color: #c75283;">Rp. {{ number_format($ringkasan['total_non_tunai'], 0, ',', '.') }}</div>
+                            <div class="stat-value">Rp. {{ number_format($ringkasan['total_non_tunai'], 0, ',', '.') }}</div>
                         </div>
                     </div>
                 </div>
@@ -167,15 +160,13 @@
         </div>
         @endcan
 
-        <!-- Critical Inventory Status Section -->
         <div class="mb-5">
             <h2 class="section-title">Status persediaan kritis</h2>
             <div class="row g-4">
-                <!-- Produk Stok Rendah -->
                 <div class="col-md-6">
                     <div class="card custom-card h-100">
                         <div class="card-header card-header-custom">
-                            <h4 class="mb-0 fw-bold" style="color: #e63946;"><i class="bi bi-exclamation-triangle me-2"></i> Daftar Produk Stok Rendah</h4>
+                            <h4 class="mb-0 fw-bold" style="color: #d90429;"><i class="bi bi-exclamation-triangle me-2"></i> Daftar Produk Stok Rendah</h4>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -213,11 +204,10 @@
                     </div>
                 </div>
 
-                <!-- Produk Habis Stok -->
                 <div class="col-md-6">
                     <div class="card custom-card h-100">
                         <div class="card-header card-header-custom">
-                            <h4 class="mb-0 fw-bold" style="color: #e63946;"><i class="bi bi-x-circle me-2"></i> Produk Habis Stok</h4>
+                            <h4 class="mb-0 fw-bold" style="color: #d90429;"><i class="bi bi-x-circle me-2"></i> Produk Habis Stok</h4>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -257,7 +247,6 @@
             </div>
         </div>
 
-        <!-- Best Seller Products Section -->
         <div class="mb-4">
             <h2 class="section-title">Barang paling laris</h2>
             <div class="card custom-card">
@@ -297,5 +286,4 @@
     </div>
 </div>
 
-<!-- batas Akhir isi konten -->
 @endsection
