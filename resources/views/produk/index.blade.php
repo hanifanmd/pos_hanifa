@@ -26,6 +26,16 @@
         border: 1px solid #f2c7d4;
     }
     
+    /* Strict Grid Layout Solution */
+    .product-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .product-grid > [class*='col-'] {
+        display: flex;
+        flex-direction: column;
+    }
+
     /* Product Card Styling */
     .product-card {
         border: 1px solid #f7d3df;
@@ -34,6 +44,9 @@
         transition: all 0.3s ease-in-out;
         overflow: hidden;
         position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
     .product-card:hover {
         transform: translateY(-8px);
@@ -44,6 +57,7 @@
         position: relative;
         width: 100%;
         height: 220px;
+        flex-shrink: 0;
         overflow: hidden;
         background-color: #fff4f7;
     }
@@ -78,13 +92,6 @@
         border-radius: 50px;
         padding: 4px 10px;
         display: inline-block;
-    }
-    .price-tag-buy {
-        font-size: 0.75rem;
-        color: #a8204d;
-        background-color: #fce8ed;
-        padding: 2px 8px;
-        border-radius: 6px;
     }
     .price-tag-sell {
         font-size: 1.15rem;
@@ -161,14 +168,7 @@
             </div>
         </div>
 
-        {{-- ALERT SECTION --}}
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4 border-0 rounded-4" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
+        <!-- Flash Message Alerts -->
         @if(session('error'))
             <div class="alert alert-danger alert-dismissible fade show shadow-sm mb-4 border-0 rounded-4" role="alert">
                 <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
@@ -203,14 +203,20 @@
         </div>
 
         <!-- Etalase Product Grid -->
-        <div class="row g-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4 product-grid">
             @forelse ($products as $product)
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card h-100 product-card">
+                <div class="col">
+                    <div class="card product-card">
                         
                         <!-- Image Container with Stock Badge -->
                         <div class="product-img-wrapper">
-                            <img src="{{ asset('storage/'.$product->foto) }}" class="product-card-img" alt="{{ $product->nama }}">
+                            @if($product->foto)
+                                <img src="{{ asset('storage/'.$product->foto) }}" class="product-card-img" alt="{{ $product->nama }}">
+                            @else
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light text-muted">
+                                    <i class="bi bi-image fs-1"></i>
+                                </div>
+                            @endif
                             <span class="badge-stock">
                                 <i class="bi bi-box-seam me-1"></i> {{ $product->stok }} pcs
                             </span>
@@ -220,7 +226,7 @@
                         <div class="card-body d-flex flex-column p-3">
                             <div class="mb-2">
                                 <span class="badge-user">
-                                    <i class="bi bi-person-fill me-1"></i>{{ $product->user->name }}
+                                    <i class="bi bi-person-fill me-1"></i>{{ $product->user->name ?? 'Admin' }}
                                 </span>
                             </div>
 
@@ -230,12 +236,8 @@
 
                             <!-- Pricing -->
                             <div class="mt-auto pt-2 border-top">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <small class="text-muted">Beli:</small>
-                                    <span class="price-tag-buy">Rp {{ number_format($product->harga_beli, 0, ',', '.') }}</span>
-                                </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <small class="text-muted">Jual:</small>
+                                    <small class="text-muted">Harga:</small>
                                     <span class="price-tag-sell">Rp {{ number_format($product->harga_jual, 0, ',', '.') }}</span>
                                 </div>
                             </div>
@@ -269,7 +271,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-12">
+                <div class="col-12 w-100">
                     <div class="card p-5 text-center border-0 rounded-4 shadow-sm" style="background: #ffffff;">
                         <div class="text-muted fs-5">
                             <i class="bi bi-flower1 display-4 opacity-50 d-block mb-3" style="color: #a8204d;"></i>

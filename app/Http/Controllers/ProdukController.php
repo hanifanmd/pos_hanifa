@@ -10,25 +10,23 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
-
 class ProdukController extends Controller
 {
-
     public function index(SearchRequest $request)
     {
         $this->authorize('viewAny', Produk::class);
 
         $keyword = $request->input('search');
         
-        if($keyword) {
-            $products = Produk::when($keyword, function ($query) use ($keyword){
+        if ($keyword) {
+            $products = Produk::when($keyword, function ($query) use ($keyword) {
                 $query->where('nama', 'like', '%' . $keyword . '%');
             })
             ->orderBy('nama')
-            ->paginate(10)
+            ->paginate(12) // Menggunakan kelipatan 4 agar grid 4 kolom simetris
             ->withQueryString();
         } else {
-             $products = Produk::latest()->paginate(10)->withQueryString();
+            $products = Produk::latest()->paginate(12)->withQueryString();
         }
        
         return view('produk.index', compact('products'));
@@ -39,7 +37,7 @@ class ProdukController extends Controller
      */
     public function create()
     {
-         $this->authorize('create', Produk::class);
+        $this->authorize('create', Produk::class);
 
         return view('produk.create');
     }
@@ -49,19 +47,23 @@ class ProdukController extends Controller
      */
     public function store(StoreRequest $request)
     {
-         $this->authorize('create', Produk::class);
+        $this->authorize('create', Produk::class);
 
         $dataReq = $request->validated();
 
-        $data['user_id'] = Auth::id();        
-        $data['nama'] = $dataReq['name'];        
+        $data['user_id']    = Auth::id();        
+        $data['nama']       = $dataReq['name'];        
         $data['harga_beli'] = $dataReq['purchase_price'];        
         $data['harga_jual'] = $dataReq['selling_price'];        
-        $data['stok'] = $dataReq['stock'] ?? true;        
-               
+        $data['stok']       = $dataReq['stock'] ?? 0;        
+        
+        // Set foto default jika user tidak mengunggah file
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('products', 'public');
+        } else {
+            $data['foto'] = 'products/default.jpg';
         }
+
         Produk::create($data);
 
         return redirect()->route('produk.index')->with('success', 'Product created successfully.');
@@ -70,12 +72,11 @@ class ProdukController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( Produk $produk)
+    public function show(Produk $produk)
     {
+        $this->authorize('view', $produk);
 
-        $this->authorize('view',$produk);
-
-        return view('produk.detail' , compact('produk'));
+        return view('produk.detail', compact('produk'));
     }
 
     /**
@@ -83,7 +84,7 @@ class ProdukController extends Controller
      */
     public function edit(Produk $produk)
     {
-         $this->authorize('update', $produk);
+        $this->authorize('update', $produk);
 
         return view('produk.edit', compact('produk'));
     }
@@ -93,38 +94,37 @@ class ProdukController extends Controller
      */
     public function update(UpdateRequest $request, Produk $produk)
     {
-           $this->authorize('update', $produk);
+        $this->authorize('update', $produk);
 
-          $dataReq = $request->validated();
+        $dataReq = $request->validated();
 
         $data = [
-        'user_id'   => Auth::id(),        
-        'nama'      => $dataReq['name'],      
-        'harga_beli'=> $dataReq['purchase_price'],        
-        'harga_jual'=> $dataReq['selling_price'],       
-        'stok'      => $dataReq['stock'],       
+            'user_id'    => Auth::id(),        
+            'nama'       => $dataReq['name'],      
+            'harga_beli' => $dataReq['purchase_price'],        
+            'harga_jual' => $dataReq['selling_price'],       
+            'stok'       => $dataReq['stock'],       
         ];  
 
-        //jika upload foto baru
+        // Jika upload foto baru
         if ($request->hasFile('foto')) {
-
-              // hapus foto lama (jika ad & memang tersimpan)
+            // Hapus foto lama (jika ada & bukan foto default)
             if (
                 $produk->foto &&
+                $produk->foto !== 'products/default.jpg' &&
                 Storage::disk('public')->exists($produk->foto)
             ) {
                 Storage::disk('public')->delete($produk->foto);
             }
-            //simpan foto baru
+            // Simpan foto baru
             $data['foto'] = $request->file('foto')->store('products', 'public');
         }
 
         $produk->update($data);
 
-        return redirect()->route('produk.edit', $produk->id)->with('success', 'Product created successfully.');
+        return redirect()->route('produk.index')->with('success', 'Product updated successfully.');
     }
 
-    /**
     /**
      * Remove the specified resource from storage.
      */
@@ -134,14 +134,13 @@ class ProdukController extends Controller
 
         try {
             // Cek apakah produk memiliki relasi ke item_penjualan
-            // (Pastikan di model Produk ada relasi bernama 'itemPenjualannya' atau sesuaikan)
             if ($produk->itemPenjualan()->exists()) {
                 return redirect()->route('produk.index')
                     ->with('error', 'Produk tidak dapat dihapus karena sudah memiliki riwayat transaksi penjualan. Silakan nonaktifkan produk ini saja.');
             }
 
-            // Hapus foto jika ada
-            if ($produk->foto && Storage::disk('public')->exists($produk->foto)) {
+            // Hapus foto jika ada (dan bukan default)
+            if ($produk->foto && $produk->foto !== 'products/default.jpg' && Storage::disk('public')->exists($produk->foto)) {
                 Storage::disk('public')->delete($produk->foto);
             }
 
@@ -151,7 +150,6 @@ class ProdukController extends Controller
                 ->with('success', 'Product deleted successfully.');
                 
         } catch (\Illuminate\Database\QueryException $e) {
-            // Fallback jika terjadi constraint violation dari database
             return redirect()->route('produk.index')
                 ->with('error', 'Gagal menghapus produk karena terikat dengan data transaksi.');
         }

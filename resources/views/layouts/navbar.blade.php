@@ -88,9 +88,15 @@
           <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-2 mt-lg-0">
             <li class="nav-item">
               <a class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" aria-current="page" href="{{ route('dashboard') }}">Halaman utama</a>
-               <li class="nav-item">
-          <a class="nav-link {{ Request::is('admin/users') ? 'active' : '' }}" href="{{ route('admin.users') }}">Akun</a>
-        </li>
+            </li>
+
+            <!-- Menu Akun Hanya Muncul Jika User adalah Admin -->
+            @if(auth()->check() && auth()->user()->role === 'admin')
+            <li class="nav-item">
+              <a class="nav-link {{ Request::is('admin/users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">Akun</a>
+            </li>
+            @endif
+
             <li class="nav-item">
               <a class="nav-link {{ Request::is('produk*') ? 'active' : '' }}" href="{{ route('produk.index') }}">Produk</a>
             </li>

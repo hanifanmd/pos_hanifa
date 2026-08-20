@@ -98,6 +98,7 @@
         font-weight: 500;
         transition: all 0.2s ease-in-out;
         white-space: nowrap;
+        cursor: pointer;
     }
 
     /* Varian Warna Tombol */
@@ -212,7 +213,9 @@
                             <td class="text-center">
                                 <div class="d-inline-flex gap-1 align-items-center justify-content-center">
                                     <!-- Tombol Detail -->
-                                    <a href="{{ route('penjualan.show', $sale) }}" class="btn btn-detail-custom btn-sm px-3">Detail</a>
+                                    <a href="{{ route('penjualan.show', $sale) }}" class="btn-action btn-detail-custom btn-sm px-3">
+                                        Detail
+                                    </a>
                                     
                                     <!-- Tombol Edit & Hapus -->
                                     @if(strtolower($sale->status) !== 'completed')
@@ -226,7 +229,7 @@
                                         <form action="{{ route('penjualan.destroy', $sale) }}" method="POST" class="d-inline m-0">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-delete-custom btn-sm px-3" onclick="return confirm('Apakah anda yakin akan menghapus penjualan ini?')">
+                                            <button type="submit" class="btn-action btn-delete-custom btn-sm px-3" onclick="return confirm('Apakah anda yakin akan menghapus penjualan ini?')">
                                                 Hapus
                                             </button>
                                         </form>
