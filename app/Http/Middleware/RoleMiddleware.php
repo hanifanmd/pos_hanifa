@@ -8,28 +8,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param \Illuminate\Http\Request $request
-     *  @param \Closure $next
-     *  @param mixed ...$roles
-     */
-  public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        //cek user jika belum login
-        if(!$request->user()) {
-            return redirect()->route('login')
-            ->witherrors ([
-                'auth' => 'silahkan login terlebih dahulu.'
-        ]);
-            }
+        // Cek jika user belum login
+        if (!$request->user()) {
+            return redirect()->route('login')->withErrors([
+                'auth' => 'Silahkan login terlebih dahulu.'
+            ]);
+        }
 
-            // ambil role user
-        $userRole = $request->user()->role->name ?? null;
+        // Ambil role_id user langsung dari database (tipe data cast ke string agar aman diproses)
+        $userRoleId = (string) $request->user()->role_id;
 
-        //jika role user tidalk sesuai route yang diminta
-        if (!in_array($userRole, $roles)) {
+        // Cek apakah role_id user ada dalam daftar yang diperbolehkan
+        if (!in_array($userRoleId, $roles)) {
             abort(403, 'Unauthorized');
         }
 

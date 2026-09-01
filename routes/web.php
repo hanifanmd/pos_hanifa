@@ -8,21 +8,22 @@ use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\Usercontroller;
 
-//route yang bisa diakses ketika user belum login (guest)
+// Route yang bisa diakses ketika user belum login (guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'index'])->name('login');
     Route::post('/auth', [AuthController::class, 'auth'])->name('auth');
 });
 
-//route yang bisa diakses ketika user sudah login
+// Route yang bisa diakses ketika user sudah login
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Rute Halaman Tentang (About) untuk Hanifa & Toko Bunga
+    // Rute Halaman Tentang (About)
     Route::view('/about', 'about')->name('about');
 
-    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+    // Khusus Admin (role_id = 1)
+    Route::middleware('role:1')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [Usercontroller::class, 'index'])->name('users');
         Route::get('/users/create', [Usercontroller::class, 'create'])->name('users.create');
         Route::post('/users/store', [Usercontroller::class, 'store'])->name('users.store');
@@ -31,11 +32,12 @@ Route::middleware('auth')->group(function () {
         Route::delete('/users/destroy/{user}', [Usercontroller::class, 'destroy'])->name('users.destroy');
     });
 
-    Route::middleware('role:admin,kasir')->group(function () {
+    // Bisa diakses Admin (1) dan Kasir (2)
+    Route::middleware('role:1,2')->group(function () {
         Route::resource('/produk' , ProdukController::class);
         Route::resource('/penjualan', PenjualanController::class);
         Route::resource('/itempenjualan', ItemPenjualanController::class);
         Route::get('/admin/penjualan/{penjualan}', [PenjualanController::class, 'show'])
-        ->name('admin.penjualan.show');
+            ->name('admin.penjualan.show');
     });
 });

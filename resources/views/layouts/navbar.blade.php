@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aplikasi POS - Toko Bunga</title>
-    <!-- Contoh menyertakan CSS Bootstrap (jika belum ada di layout utama) -->
+    <!-- CSS Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -12,7 +12,7 @@
         .navbar-custom {
             background: linear-gradient(135deg, #db2777 0%, #831843 100%) !important;
             box-shadow: 0 6px 15px rgba(219, 39, 119, 0.2);
-            border-radius: 0 0 20px 20px; /* Membuat ujung bawah navbar melengkung/tumpul */
+            border-radius: 0 0 20px 20px;
             padding-top: 12px;
             padding-bottom: 12px;
         }
@@ -29,7 +29,7 @@
         .navbar-custom .navbar-nav .nav-link {
             color: rgba(255, 255, 255, 0.85) !important;
             transition: all 0.3s ease;
-            border-radius: 10px; /* Ujung lebih tumpul */
+            border-radius: 10px;
             padding: 8px 14px;
             margin: 0 3px;
             font-weight: 500;
@@ -43,7 +43,7 @@
             transform: translateY(-1px);
         }
 
-        /* Tombol Toggler (Hamburger) untuk Mobile dengan Ujung Tumpul */
+        /* Tombol Toggler (Hamburger) untuk Mobile */
         .navbar-custom .navbar-toggler {
             border-color: rgba(255, 255, 255, 0.4);
             border-radius: 10px;
@@ -54,12 +54,12 @@
             filter: brightness(0) invert(1);
         }
 
-        /* Kustomisasi Tombol Keluar agar Selaras dan Tumpul */
+        /* Kustomisasi Tombol Keluar */
         .navbar-custom .btn-logout {
             background-color: #ffffff;
             color: #be185d;
             font-weight: 600;
-            border-radius: 10px; /* Ujung tumpul */
+            border-radius: 10px;
             padding: 8px 18px;
             transition: all 0.3s ease;
             border: none;
@@ -77,7 +77,7 @@
     <!-- Navbar POS Toko Bunga -->
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid px-3">
-        <a class="navbar-brand" href="#">🌷 Blossom POS</a>
+        <a class="navbar-brand" href="{{ route('dashboard') }}">🌷 Blossom POS</a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -87,24 +87,26 @@
           <!-- Menu Utama di Sebelah Kiri -->
           <ul class="navbar-nav me-auto mb-2 mb-lg-0 mt-2 mt-lg-0">
             <li class="nav-item">
-              <a class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" aria-current="page" href="{{ route('dashboard') }}">Halaman utama</a>
+              <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" aria-current="page" href="{{ route('dashboard') }}">Halaman utama</a>
             </li>
 
-            <!-- Menu Akun Hanya Muncul Jika User adalah Admin -->
-            @if(auth()->check() && auth()->user()->role === 'admin')
+            <!-- Menu User / Akun HANYA MUNCUL JIKA role_id = 1 (ADMIN) -->
+            @if(auth()->check() && auth()->user()->role_id == 1)
             <li class="nav-item">
-              <a class="nav-link {{ Request::is('admin/users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">Akun</a>
+              <a class="nav-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}" href="{{ route('admin.users') }}">User</a>
             </li>
             @endif
 
             <li class="nav-item">
-              <a class="nav-link {{ Request::is('produk*') ? 'active' : '' }}" href="{{ route('produk.index') }}">Produk</a>
+              <a class="nav-link {{ request()->routeIs('produk.*') ? 'active' : '' }}" href="{{ route('produk.index') }}">Produk</a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link {{ Request::is('penjualan*') ? 'active' : '' }}" href="{{ route('penjualan.index') }}">Penjualan</a>
+              <a class="nav-link {{ request()->routeIs('penjualan.*') ? 'active' : '' }}" href="{{ route('penjualan.index') }}">Penjualan</a>
             </li> 
+
             <li class="nav-item">
-               <a class="nav-link {{ request()->routeIs('about') ? 'active fw-bold' : '' }}" href="{{ route('about') }}">Tentang Kami</a>
+               <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">Tentang Kami</a>
             </li>
           </ul>
 

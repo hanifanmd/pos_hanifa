@@ -6,7 +6,7 @@
 
 @include('layouts.navbar')
 
-<!-- Custom Colorful Styling for Sales Detail (Maroon & Magenta Theme) -->
+<!-- Custom Styling -->
 <style>
     .page-wrapper {
         background-color: #fcf5f7;
@@ -65,6 +65,67 @@
         font-weight: 700;
         color: #581845;
     }
+
+    /* Sembunyikan template struk khusus di layar biasa */
+    #struk-kasir {
+        display: none;
+    }
+
+    /* CSS Khusus Cetak Struk Melebar (Kertas A4 / Printer Biasa) */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+
+        #struk-kasir, #struk-kasir * {
+            visibility: visible;
+            display: block !important;
+        }
+
+        #struk-kasir {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            padding: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            color: #000;
+            background: #fff;
+        }
+
+        @page {
+            size: auto;
+            margin: 10mm;
+        }
+
+        .struk-header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .struk-title {
+            font-weight: bold;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+        .struk-divider {
+            border-bottom: 1px dashed #000;
+            margin: 10px 0;
+        }
+        .struk-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .struk-table td {
+            font-size: 14px;
+            padding: 4px 0;
+        }
+        .struk-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+    }
 </style>
 
 <div class="page-wrapper">
@@ -86,7 +147,7 @@
             </div>
         </div>
 
-        <!-- Informasi Utama Transaksi (Card Ringkasan) -->
+        <!-- Informasi Utama Transaksi -->
         <div class="card custom-card p-4 mb-4">
             <div class="row align-items-center">
                 <div class="col-md-4 mb-3 mb-md-0">
@@ -156,8 +217,11 @@
                 </table>
             </div>
 
-            <!-- Card Footer dengan Tombol Kembali -->
-            <div class="card-footer bg-white border-0 py-4 px-4 text-end">
+            <!-- Card Footer -->
+            <div class="card-footer bg-white border-0 py-4 px-4 text-end d-flex justify-content-end gap-2">
+                <button onclick="window.print()" class="btn rounded-pill px-4 fw-semibold text-white me-2" style="background: #28a745;">
+                    <i class="bi bi-printer me-1"></i> Cetak Struk
+                </button>
                 <a href="{{ route('penjualan.index') }}" class="btn rounded-pill px-4 fw-semibold text-white" style="background: linear-gradient(135deg, #802040 0%, #9b2246 100%);">
                     Kembali ke Daftar Penjualan
                 </a>
@@ -167,4 +231,51 @@
     </div>
 </div>
 
+<!-- ================= TEMPLATE STRUK KHUSUS PRINT ================= -->
+<div id="struk-kasir">
+    <div class="struk-header">
+        <div class="struk-title">BLOSSOM POS</div>
+        <div>Jl. Raya Kasir No. 123</div>
+        <div>Telp: 0812-3456-7890</div>
+    </div>
+
+    <div class="struk-divider"></div>
+
+    <div style="display: flex; justify-content: space-between;">
+        <span>Tgl : {{ $sale->created_at->format('d/m/Y H:i') }}</span>
+    </div>
+    <div style="display: flex; justify-content: space-between;">
+        <span>Kasir: {{ $sale->user->name ?? 'Kasir' }}</span>
+        <span>ID: #{{ $sale->id }}</span>
+    </div>
+
+    <div class="struk-divider"></div>
+
+    <table class="struk-table">
+        @foreach($sale->itemPenjualan as $item)
+        <tr>
+            <td colspan="2" style="font-weight: bold;">{{ $item->produk->nama ?? 'Produk' }}</td>
+        </tr>
+        <tr>
+            <td style="padding-left: 10px;">1 x {{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
+            <td style="text-align: right;">{{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
+        </tr>
+        @endforeach
+    </table>
+
+    <div class="struk-divider"></div>
+
+    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
+        <span>TOTAL :</span>
+        <span>Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}</span>
+    </div>
+
+    <div class="struk-divider"></div>
+
+    <div class="struk-footer">
+        --- TERIMA KASIH ---<br>
+        BARANG YANG SUDAH DIBELI<br>
+        TIDAK DAPAT DITUKAR/DIKEMBALIKAN
+    </div>
+</div>
 @endsection
