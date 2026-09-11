@@ -10,25 +10,25 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class Usercontroller extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(SearchRequest $request)
     {
-       $keyword = $request->input('search');
-       
-       if($keyword) {
-        $users = User::whereRaw("MATCH(name,email) AGAINST(? IN BOOLEAN MODE)",[$keyword])
-        ->paginate(10)
-        ->withQueryString();
-       } else{
-        $users = User::query()->paginate(10)->withQueryString();
-       }
-         return view('users.index', compact('users'));
+        $keyword = $request->input('search');
+
+        if ($keyword) {
+            $users = User::whereRaw("MATCH(name,email) AGAINST(? IN BOOLEAN MODE)", [$keyword])
+                ->paginate(10)
+                ->withQueryString();
+        } else {
+            $users = User::query()->paginate(10)->withQueryString();
+        }
+
+        return view('users.index', compact('users'));
     }
-      
 
     /**
      * Show the form for creating a new resource.
@@ -70,7 +70,7 @@ class Usercontroller extends Controller
      */
     public function edit(User $user)
     {
-        $roles = role::all();
+        $roles = Role::all();
 
         return view('users.edit', compact('user', 'roles'));
     }
@@ -82,9 +82,9 @@ class Usercontroller extends Controller
     {
         $dataReq = $request->validated();
 
-        $user->name    =$dataReq['name'];
-        $user->email   =$dataReq['email'];
-        $user->role_id =$dataReq['role_id'];
+        $user->name = $dataReq['name'];
+        $user->email = $dataReq['email'];
+        $user->role_id = $dataReq['role_id'];
 
         if (!empty($dataReq['password'])) {
             $user->password = Hash::make($dataReq['password']);
@@ -92,7 +92,7 @@ class Usercontroller extends Controller
 
         $user->save();
 
-        return redirect()->route('admin.users.edit', $user->id)->with('success', 'User update');
+        return redirect()->route('admin.users.edit', $user->id)->with('success', 'User updated');
     }
 
     /**
@@ -100,9 +100,16 @@ class Usercontroller extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
+        try {
+            $user->delete();
+            return back()->with('success', 'User berhasil dihapus');
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Menangkap error jika user memiliki relasi data (misal: transaksi/penjualan)
+            if ($e->getCode() === '23000') {
+                return back()->with('error', 'User tidak dapat dihapus karena memiliki riwayat transaksi/data terkait.');
+            }
 
-        return back()->with('success', 'User deleted');
+            return back()->with('error', 'Terjadi kesalahan saat menghapus user.');
+        }
     }
 }
-

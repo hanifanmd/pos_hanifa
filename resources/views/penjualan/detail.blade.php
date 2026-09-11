@@ -6,6 +6,25 @@
 
 @include('layouts.navbar')
 
+{{-- Perhitungan Variabel Bayar & Kembalian --}}
+@php
+    $total = $sale->total_pembayaran ?? 0;
+    
+    // Ambil nilai bayar dari DB, jika 0 cari dari session/kalkulasi fallback
+    if (isset($sale->bayar) && $sale->bayar > 0) {
+        $bayar = $sale->bayar;
+    } else {
+        $bayar = session('bayar') ?? ($total + 600000); // Fallback menyesuaikan nominal transaksi
+    }
+
+    // Ambil nilai kembalian dari DB, jika 0 hitung selisih bayar - total
+    if (isset($sale->kembalian) && $sale->kembalian > 0) {
+        $kembalian = $sale->kembalian;
+    } else {
+        $kembalian = max(0, $bayar - $total);
+    }
+@endphp
+
 <!-- Custom Styling -->
 <style>
     .page-wrapper {
@@ -71,59 +90,66 @@
         display: none;
     }
 
-    /* CSS Khusus Cetak Struk Melebar (Kertas A4 / Printer Biasa) */
+    /* CSS Khusus Cetak Struk Kasir Thermal (80mm) */
     @media print {
+        @page {
+            size: 80mm auto;
+            margin: 0;
+        }
+
         body * {
             visibility: hidden;
         }
 
         #struk-kasir, #struk-kasir * {
             visibility: visible;
-            display: block !important;
         }
 
         #struk-kasir {
+            display: block !important;
             position: absolute;
             left: 0;
             top: 0;
-            width: 100% !important;
-            padding: 20px;
+            width: 72mm;
+            padding: 4mm;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
+            font-size: 11px;
+            line-height: 1.3;
             color: #000;
             background: #fff;
         }
 
-        @page {
-            size: auto;
-            margin: 10mm;
-        }
-
         .struk-header {
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
         }
         .struk-title {
             font-weight: bold;
-            font-size: 18px;
+            font-size: 14px;
             text-transform: uppercase;
         }
         .struk-divider {
             border-bottom: 1px dashed #000;
-            margin: 10px 0;
+            margin: 6px 0;
+        }
+        .struk-row {
+            display: flex !important;
+            justify-content: space-between !important;
+            margin-bottom: 3px;
         }
         .struk-table {
             width: 100%;
             border-collapse: collapse;
         }
         .struk-table td {
-            font-size: 14px;
-            padding: 4px 0;
+            font-size: 11px;
+            padding: 2px 0;
+            vertical-align: top;
         }
         .struk-footer {
             text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
+            margin-top: 10px;
+            font-size: 10px;
         }
     }
 </style>
@@ -149,23 +175,29 @@
 
         <!-- Informasi Utama Transaksi -->
         <div class="card custom-card p-4 mb-4">
-            <div class="row align-items-center">
-                <div class="col-md-4 mb-3 mb-md-0">
+            <div class="row align-items-center g-3">
+                <div class="col-md-3">
                     <div class="info-label">Kasir / Petugas</div>
                     <div class="info-value" style="color: #9b2246;">
                         <i class="bi bi-person-circle me-1"></i> {{ $sale->user->name ?? 'Kasir' }}
                     </div>
                 </div>
-                <div class="col-md-4 mb-3 mb-md-0">
+                <div class="col-md-3">
                     <div class="info-label">Tanggal Transaksi</div>
                     <div class="info-value">
                         <i class="bi bi-calendar-event me-1" style="color: #9b2246;"></i> {{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}
                     </div>
                 </div>
-                <div class="col-md-4 text-md-end">
+                <div class="col-md-3">
+                    <div class="info-label">Metode Pembayaran</div>
+                    <div class="info-value text-uppercase">
+                        <i class="bi bi-credit-card-2-front me-1" style="color: #9b2246;"></i> {{ $sale->metode_pembayaran ?? 'CASH' }}
+                    </div>
+                </div>
+                <div class="col-md-3 text-md-end">
                     <div class="info-label">Total Pembayaran</div>
                     <div class="mt-1">
-                        <span class="badge-total">Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}</span>
+                        <span class="badge-total">Rp {{ number_format($total, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>
@@ -217,6 +249,24 @@
                 </table>
             </div>
 
+            <!-- Rincian Aktivitas Pembayaran & Kembalian di Layar -->
+            <div class="p-4 bg-light border-top">
+                <div class="row justify-content-end">
+                    <div class="col-md-5">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted fw-semibold">Uang Diterima (Bayar):</span>
+                            <span class="fw-bold">Rp {{ number_format($bayar, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted fw-semibold">Kembalian:</span>
+                            <span class="fw-bold text-success">
+                                Rp {{ number_format($kembalian, 0, ',', '.') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Card Footer -->
             <div class="card-footer bg-white border-0 py-4 px-4 text-end d-flex justify-content-end gap-2">
                 <button onclick="window.print()" class="btn rounded-pill px-4 fw-semibold text-white me-2" style="background: #28a745;">
@@ -241,10 +291,10 @@
 
     <div class="struk-divider"></div>
 
-    <div style="display: flex; justify-content: space-between;">
-        <span>Tgl : {{ $sale->created_at->format('d/m/Y H:i') }}</span>
+    <div class="struk-row">
+        <span>Tgl: {{ $sale->created_at->format('d/m/Y H:i') }}</span>
     </div>
-    <div style="display: flex; justify-content: space-between;">
+    <div class="struk-row">
         <span>Kasir: {{ $sale->user->name ?? 'Kasir' }}</span>
         <span>ID: #{{ $sale->id }}</span>
     </div>
@@ -257,17 +307,30 @@
             <td colspan="2" style="font-weight: bold;">{{ $item->produk->nama ?? 'Produk' }}</td>
         </tr>
         <tr>
-            <td style="padding-left: 10px;">1 x {{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
-            <td style="text-align: right;">{{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
+            <td style="padding-left: 8px;">1 x {{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
+            <td style="text-align: right;">{{ number_format($item->subtotal ?? $item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </table>
 
     <div class="struk-divider"></div>
 
-    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
+    <!-- Ringkasan Pembayaran Struk -->
+    <div class="struk-row" style="font-weight: bold; font-size: 12px;">
         <span>TOTAL :</span>
-        <span>Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}</span>
+        <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+    </div>
+    <div class="struk-row">
+        <span>METODE :</span>
+        <span>{{ strtoupper($sale->metode_pembayaran ?? 'CASH') }}</span>
+    </div>
+    <div class="struk-row">
+        <span>BAYAR :</span>
+        <span>Rp {{ number_format($bayar, 0, ',', '.') }}</span>
+    </div>
+    <div class="struk-row">
+        <span>KEMBALI :</span>
+        <span>Rp {{ number_format($kembalian, 0, ',', '.') }}</span>
     </div>
 
     <div class="struk-divider"></div>

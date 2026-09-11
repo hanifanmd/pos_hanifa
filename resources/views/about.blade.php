@@ -178,7 +178,7 @@
                 <div class="card custom-card h-100 text-center overflow-hidden">
                     <div class="profile-card-header">
                         <div class="profile-avatar-wrapper mb-3">
-                            <img src="{{ asset('images/popo.jpg') }}" class="profile-avatar" alt="Hanifa">
+                            <img src="{{ asset('images/hanifa.jpeg') }}" class="profile-avatar" alt="Hanifa">
                         </div>
                         <h4 class="fw-bold mb-1" style="color: #581845;">Hanifa</h4>
                         <span class="badge-dev">Developer & Owner</span>
