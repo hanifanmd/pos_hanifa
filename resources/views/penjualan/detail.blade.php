@@ -6,19 +6,19 @@
 
 @include('layouts.navbar')
 
-{{-- Perhitungan Variabel Bayar & Kembalian --}}
+{{-- Perhitungan Variabel Bayar & Kembalian (Versi Aman & Clean) --}}
 @php
-    $total = $sale->total_pembayaran ?? 0;
-    
-    // Ambil nilai bayar dari DB, jika 0 cari dari session/kalkulasi fallback
+    $total = $sale->total_pembayaran ?? $sale->total_harga ?? 0;
+
+    // 1. Ambil nilai bayar dari DB, session, atau fallback ke $total
     if (isset($sale->bayar) && $sale->bayar > 0) {
         $bayar = $sale->bayar;
     } else {
-        $bayar = session('bayar') ?? ($total + 600000); // Fallback menyesuaikan nominal transaksi
+        $bayar = session('bayar') ?? $total;
     }
 
-    // Ambil nilai kembalian dari DB, jika 0 hitung selisih bayar - total
-    if (isset($sale->kembalian) && $sale->kembalian > 0) {
+    // 2. Ambil nilai kembalian dari DB atau hitung otomatis
+    if (isset($sale->kembalian) && $sale->kembalian >= 0 && (isset($sale->bayar) && $sale->bayar > 0)) {
         $kembalian = $sale->kembalian;
     } else {
         $kembalian = max(0, $bayar - $total);
@@ -179,13 +179,14 @@
                 <div class="col-md-3">
                     <div class="info-label">Kasir / Petugas</div>
                     <div class="info-value" style="color: #9b2246;">
-                        <i class="bi bi-person-circle me-1"></i> {{ $sale->user->name ?? 'Kasir' }}
+                        <i class="bi bi-person-circle me-1"></i> {{ $sale->user->name ?? $sale->kasir->name ?? 'Kasir' }}
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="info-label">Tanggal Transaksi</div>
                     <div class="info-value">
-                        <i class="bi bi-calendar-event me-1" style="color: #9b2246;"></i> {{ $sale->created_at->translatedFormat('d-m-Y H:i:s') }}
+                        <i class="bi bi-calendar-event me-1" style="color: #9b2246;"></i> 
+                        {{ isset($sale->created_at) ? $sale->created_at->translatedFormat('d-m-Y H:i:s') : now()->translatedFormat('d-m-Y H:i:s') }}
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -215,15 +216,24 @@
                             <th scope="col" class="ps-4 py-3">#</th>
                             <th scope="col" class="py-3">Foto</th>
                             <th scope="col" class="py-3">Nama Produk</th>
+                            <th scope="col" class="py-3 text-center">Jumlah (Qty)</th>
                             <th scope="col" class="py-3 text-end pe-4">Harga Jual</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($sale->itemPenjualan as $index => $item)
+                        @php 
+                            $items = $sale->itemPenjualan ?? $sale->detailPenjualan ?? [];
+                        @endphp
+
+                        @forelse($items as $index => $item)
+                        @php
+                            $hargaItem = $item->harga_jual ?? $item->harga ?? $item->produk->harga_jual ?? 0;
+                            $qtyItem = $item->jumlah ?? $item->qty ?? 1;
+                        @endphp
                         <tr>
                             <th scope="row" class="ps-4 fw-bold text-muted">{{ $index + 1 }}</th>
                             <td>
-                                @if($item->produk && $item->produk->foto)
+                                @if(isset($item->produk->foto) && $item->produk->foto)
                                     <img src="{{ asset('storage/' . $item->produk->foto) }}" class="product-img" alt="{{ $item->produk->nama }}">
                                 @else
                                     <div class="bg-light d-flex align-items-center justify-content-center product-img text-muted">
@@ -232,15 +242,18 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="fw-bold text-dark fs-6">{{ $item->produk->nama ?? 'Produk Dihapus' }}</span>
+                                <span class="fw-bold text-dark fs-6">{{ $item->produk->nama ?? $item->nama_produk ?? 'Produk Dihapus' }}</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="fw-semibold">{{ $qtyItem }}</span>
                             </td>
                             <td class="text-end pe-4">
-                                <span class="fw-semibold" style="color: #9b2246;">Rp {{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</span>
+                                <span class="fw-semibold" style="color: #9b2246;">Rp {{ number_format($hargaItem, 0, ',', '.') }}</span>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center py-5">
+                            <td colspan="5" class="text-center py-5">
                                 <div class="text-muted fs-5"><i class="bi bi-inbox fs-1 d-block mb-2" style="color: #9b2246;"></i> Tidak ada item produk dalam transaksi ini.</div>
                             </td>
                         </tr>
@@ -292,23 +305,32 @@
     <div class="struk-divider"></div>
 
     <div class="struk-row">
-        <span>Tgl: {{ $sale->created_at->format('d/m/Y H:i') }}</span>
+        <span>Tgl: {{ isset($sale->created_at) ? $sale->created_at->format('d/m/Y H:i') : date('d/m/Y H:i') }}</span>
     </div>
     <div class="struk-row">
-        <span>Kasir: {{ $sale->user->name ?? 'Kasir' }}</span>
+        <span>Kasir: {{ $sale->user->name ?? $sale->kasir->name ?? 'Kasir' }}</span>
         <span>ID: #{{ $sale->id }}</span>
     </div>
 
     <div class="struk-divider"></div>
 
     <table class="struk-table">
-        @foreach($sale->itemPenjualan as $item)
+        @php 
+            $itemsStruk = $sale->itemPenjualan ?? $sale->detailPenjualan ?? [];
+        @endphp
+
+        @foreach($itemsStruk as $item)
+        @php
+            $hargaItem = $item->harga_jual ?? $item->harga ?? $item->produk->harga_jual ?? 0;
+            $qtyItem = $item->jumlah ?? $item->qty ?? 1;
+            $subtotalItem = $item->subtotal ?? ($hargaItem * $qtyItem);
+        @endphp
         <tr>
-            <td colspan="2" style="font-weight: bold;">{{ $item->produk->nama ?? 'Produk' }}</td>
+            <td colspan="2" style="font-weight: bold;">{{ $item->produk->nama ?? $item->nama_produk ?? 'Produk' }}</td>
         </tr>
         <tr>
-            <td style="padding-left: 8px;">1 x {{ number_format($item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
-            <td style="text-align: right;">{{ number_format($item->subtotal ?? $item->produk->harga_jual ?? 0, 0, ',', '.') }}</td>
+            <td style="padding-left: 8px;">{{ $qtyItem }} x {{ number_format($hargaItem, 0, ',', '.') }}</td>
+            <td style="text-align: right;">{{ number_format($subtotalItem, 0, ',', '.') }}</td>
         </tr>
         @endforeach
     </table>

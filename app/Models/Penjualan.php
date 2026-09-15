@@ -13,11 +13,16 @@ class Penjualan extends Model
     protected $table = 'penjualan';
 
     protected $fillable = [
-        'user_id',
-        'total_pembayaran',
-        'metode_pembayaran',
-        'status',
-    ];
+      
+    'user_id',
+    'total_pembayaran',
+    'metode_pembayaran',
+    'bayar',
+    'kembalian',
+    'status',
+];
+
+    
 
      public function user()
      {

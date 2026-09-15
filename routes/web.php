@@ -22,6 +22,9 @@ Route::middleware('auth')->group(function () {
     // Rute Halaman Tentang (About)
     Route::view('/about', 'about')->name('about');
 
+    // BARU: Rute Halaman Profil (mengarahkan ke resources/views/profil.blade.php)
+    Route::view('/profil', 'profil')->name('profil');
+
     // Khusus Admin (role_id = 1)
     Route::middleware('role:1')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [Usercontroller::class, 'index'])->name('users');
@@ -34,7 +37,7 @@ Route::middleware('auth')->group(function () {
 
     // Bisa diakses Admin (1) dan Kasir (2)
     Route::middleware('role:1,2')->group(function () {
-        Route::resource('/produk' , ProdukController::class);
+        Route::resource('/produk', ProdukController::class);
         Route::resource('/penjualan', PenjualanController::class);
         Route::resource('/itempenjualan', ItemPenjualanController::class);
         Route::get('/admin/penjualan/{penjualan}', [PenjualanController::class, 'show'])
