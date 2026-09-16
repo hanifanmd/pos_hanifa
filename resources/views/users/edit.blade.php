@@ -86,11 +86,6 @@
                 <h1 class="display-6 fw-bold mb-1 text-white">Edit Akun</h1>
                 <p class="text-white mb-0 opacity-75">Perbarui informasi data user: <strong>{{ $user->name }}</strong></p>
             </div>
-            <div class="mt-3 mt-md-0">
-                <a href="{{ route('admin.users') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" style="color: #a8204d;">
-                    <i class="bi bi-arrow-left me-1"></i> Kembali
-                </a>
-            </div>
         </div>
 
         <!-- Form Card -->

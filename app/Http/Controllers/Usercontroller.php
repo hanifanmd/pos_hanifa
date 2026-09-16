@@ -92,7 +92,7 @@ class UserController extends Controller
 
         $user->save();
 
-        return redirect()->route('admin.users.edit', $user->id)->with('success', 'User updated');
+        return redirect()->route('admin.users')->with('success', 'Data user berhasil diperbarui');
     }
 
     /**

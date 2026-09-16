@@ -267,12 +267,6 @@
                     <i class="bi bi-instagram me-2"></i> @hanifa_nmd
                 </a>
             </div>
-
-            <div class="pt-3 border-top">
-                <a href="{{ route('penjualan.index') }}" class="btn btn-back-main">
-                    <i class="bi bi-arrow-left me-2"></i> Kembali ke Daftar Penjualan
-                </a>
-            </div>
         </div>
 
     </div>
