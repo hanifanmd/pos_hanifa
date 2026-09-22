@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     // Bisa diakses Admin (1) dan Kasir (2)
     Route::middleware('role:1,2')->group(function () {
         Route::resource('/produk', ProdukController::class);
+        Route::get('/penjualan/rekap', [PenjualanController::class, 'rekap'])->name('penjualan.rekap');
         Route::resource('/penjualan', PenjualanController::class);
         Route::resource('/itempenjualan', ItemPenjualanController::class);
         Route::get('/admin/penjualan/{penjualan}', [PenjualanController::class, 'show'])

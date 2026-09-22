@@ -185,6 +185,7 @@
                             <th scope="col" class="ps-4 py-3">#</th>
                             <th scope="col" class="py-3">Tanggal Transaksi</th>
                             <th scope="col" class="py-3">Kasir</th>
+                            <th scope="col" class="py-3">Request</th>
                             <th scope="col" class="py-3">Total Pembayaran</th>
                             <th scope="col" class="py-3">Metode Pembayaran</th>
                             <th scope="col" class="py-3">Status</th>
@@ -200,6 +201,17 @@
                             </td>
                             <td>
                                 <span class="fw-bold text-dark"><i class="bi bi-person-badge me-1" style="color: #802040;"></i> {{ $sale->user->name }}</span>
+                            </td>
+                            <td>
+                                @if($sale->ada_kartu_ucapan)
+                                    <div class="fw-semibold small text-dark">Kartu Ucapan</div>
+                                    <div class="text-muted small">
+                                        {{ $sale->bunga ?? '-' }} • {{ $sale->jumlah_tangkai ?? 0 }} tangkai
+                                    </div>
+                                    <div class="text-muted small">Untuk: {{ $sale->penerima ?? '-' }}</div>
+                                @else
+                                    <span class="text-muted small">Tidak ada request</span>
+                                @endif
                             </td>
                             <td>
                                 <span class="badge-total-bayar">Rp {{ number_format($sale->total_pembayaran, 0, ',', '.') }}</span>
@@ -240,7 +252,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center py-5">
+                            <td colspan="8" class="text-center py-5">
                                 <div class="text-muted fs-5"><i class="bi bi-inbox fs-1 d-block mb-2" style="color: #9b2246;"></i> Data Tidak Ditemukan</div>
                             </td>
                         </tr>

@@ -88,4 +88,29 @@
             preview.style.display = 'block';
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const purchaseInput = document.querySelector('input[name="purchase_price"]');
+        const sellingInput = document.querySelector('input[name="selling_price"]');
+
+        if (!purchaseInput || !sellingInput) {
+            return;
+        }
+
+        purchaseInput.addEventListener('input', function () {
+            const hargaBeli = Number(this.value);
+
+            if (hargaBeli > 0 && (sellingInput.value === '' || sellingInput.dataset.autoFilled === 'true')) {
+                const hargaJual = Math.ceil(hargaBeli * 1.3);
+                sellingInput.value = hargaJual;
+                sellingInput.dataset.autoFilled = 'true';
+            }
+        });
+
+        sellingInput.addEventListener('input', function () {
+            if (this.value !== '') {
+                this.dataset.autoFilled = 'false';
+            }
+        });
+    });
 </script>

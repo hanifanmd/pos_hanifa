@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Penjualan\CheckoutRequest;
 use App\Http\Requests\SearchRequest;
 use App\Models\Penjualan;
 use App\Models\Produk;
@@ -35,6 +36,54 @@ class PenjualanController extends Controller
             ->withQueryString();
             
         return view('penjualan.index', compact('sales'));
+    }
+
+    public function rekap()
+    {
+        $harian = Penjualan::query()
+            ->where('status', 'COMPLETED')
+            ->selectRaw('DATE(created_at) as tanggal, COUNT(*) as jumlah_transaksi, SUM(total_pembayaran) as total_penjualan')
+            ->groupByRaw('DATE(created_at)')
+            ->orderByRaw('DATE(created_at) DESC')
+            ->limit(30)
+            ->get();
+
+        $bulanan = Penjualan::query()
+            ->where('status', 'COMPLETED')
+            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as bulan, COUNT(*) as jumlah_transaksi, SUM(total_pembayaran) as total_penjualan')
+            ->groupByRaw('DATE_FORMAT(created_at, "%Y-%m")')
+            ->orderByRaw('DATE_FORMAT(created_at, "%Y-%m") DESC')
+            ->limit(12)
+            ->get();
+
+        $tahunan = Penjualan::query()
+            ->where('status', 'COMPLETED')
+            ->selectRaw('YEAR(created_at) as tahun, COUNT(*) as jumlah_transaksi, SUM(total_pembayaran) as total_penjualan')
+            ->groupByRaw('YEAR(created_at)')
+            ->orderByRaw('YEAR(created_at) DESC')
+            ->get();
+
+        $totalHariIni = Penjualan::where('status', 'COMPLETED')
+            ->whereDate('created_at', now()->toDateString())
+            ->sum('total_pembayaran');
+
+        $totalBulanIni = Penjualan::where('status', 'COMPLETED')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('total_pembayaran');
+
+        $totalTahunIni = Penjualan::where('status', 'COMPLETED')
+            ->whereYear('created_at', now()->year)
+            ->sum('total_pembayaran');
+
+        return view('penjualan.rekap', compact(
+            'harian',
+            'bulanan',
+            'tahunan',
+            'totalHariIni',
+            'totalBulanIni',
+            'totalTahunIni'
+        ));
     }
 
     /**
@@ -117,23 +166,24 @@ class PenjualanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Penjualan $penjualan)
+    public function update(CheckoutRequest $request, Penjualan $penjualan)
     {
-        $request->validate([
-            'payment_method' => 'required|in:CASH,QRIS',
-            'bayar'          => 'required_if:payment_method,CASH|nullable',
-        ]);
-
         if ($penjualan->status !== 'OPEN') {
             return back()->with('errors', 'Transaksi sudah diproses');
         }
 
-        if ($penjualan->itemPenjualan()->count() === 0) {
+        $isGreetingCardOrder = $request->boolean('ada_kartu_ucapan');
+
+        if ($penjualan->itemPenjualan()->count() === 0 && ! $isGreetingCardOrder) {
             return back()->with('errors', 'Keranjang masih kosong');
         }
 
         // Hitung total murni dari subtotal item keranjang
-        $total = (float) $penjualan->itemPenjualan()->sum('subtotal');
+        $totalBarang = (float) $penjualan->itemPenjualan()->sum('subtotal');
+        $hargaPerTangkai = $isGreetingCardOrder ? (float) $request->input('harga_per_tangkai', 0) : 0;
+        $jumlahTangkai = $isGreetingCardOrder ? (int) $request->input('jumlah_tangkai', 0) : 0;
+        $biayaKartuUcapan = $isGreetingCardOrder ? ($jumlahTangkai * $hargaPerTangkai) : 0;
+        $total = $totalBarang + $biayaKartuUcapan;
         
         // Bersihkan input nominal bayar jika mengandung titik atau karakter selain angka
         $rawBayar = $request->input('bayar');
@@ -153,13 +203,22 @@ class PenjualanController extends Controller
         // Hitung selisih kembalian
         $kembalian = $bayar - $total;
 
-        DB::transaction(function () use ($penjualan, $request, $total, $bayar, $kembalian) {
+        DB::transaction(function () use ($penjualan, $request, $total, $bayar, $kembalian, $biayaKartuUcapan, $isGreetingCardOrder, $jumlahTangkai, $hargaPerTangkai) {
             $penjualan->update([
-                'metode_pembayaran' => $request->payment_method,
-                'total_pembayaran'  => $total,
-                'bayar'             => $bayar,
-                'kembalian'         => $kembalian,
-                'status'            => 'COMPLETED'
+                'metode_pembayaran'  => $request->payment_method,
+                'total_pembayaran'   => $total,
+                'bayar'              => $bayar,
+                'kembalian'          => $kembalian,
+                'status'             => 'COMPLETED',
+                'ada_kartu_ucapan'   => $isGreetingCardOrder,
+                'pengirim'           => $isGreetingCardOrder ? $request->input('pengirim') : null,
+                'penerima'           => $isGreetingCardOrder ? $request->input('penerima') : null,
+                'bunga'              => $isGreetingCardOrder ? $request->input('bunga') : null,
+                'jumlah_tangkai'     => $jumlahTangkai,
+                'harga_per_tangkai'  => $hargaPerTangkai,
+                'biaya_kartu_ucapan' => $biayaKartuUcapan,
+                'hiasan'             => $isGreetingCardOrder ? $request->input('hiasan') : null,
+                'kartu_ucapan'       => $isGreetingCardOrder ? $request->input('kartu_ucapan') : null,
             ]);
         });
 

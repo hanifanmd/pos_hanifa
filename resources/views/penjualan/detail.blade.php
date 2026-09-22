@@ -166,11 +166,6 @@
                 <h1 class="display-6 fw-bold mb-1 text-white">Rincian Penjualan</h1>
                 <p class="text-white mb-0 opacity-75">Informasi lengkap transaksi dan daftar item produk yang dibeli.</p>
             </div>
-            <div class="mt-3 mt-md-0">
-                <a href="{{ route('penjualan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm" style="color: #802040;">
-                    <i class="bi bi-arrow-left me-1"></i> Kembali
-                </a>
-            </div>
         </div>
 
         <!-- Informasi Utama Transaksi -->
@@ -205,7 +200,7 @@
         </div>
 
         <!-- Tabel Item Produk yang Dibeli -->
-        <div class="card custom-card">
+        <div class="card custom-card mb-4">
             <div class="card-header bg-white border-0 py-3 px-4 fw-bold fs-5" style="color: #581845;">
                 <i class="bi bi-cart-check me-2" style="color: #9b2246;"></i> Item Produk Terjual
             </div>
@@ -261,7 +256,59 @@
                     </tbody>
                 </table>
             </div>
+        </div>
 
+        @if(($sale->ada_kartu_ucapan ?? false) && (!empty($sale->pengirim) || !empty($sale->penerima) || !empty($sale->bunga) || !empty($sale->kartu_ucapan)))
+            <div class="card custom-card mb-4">
+                <div class="card-header bg-white border-0 py-3 px-4 fw-bold fs-5" style="color: #581845;">
+                    <i class="bi bi-card-text me-2" style="color: #9b2246;"></i> Kartu Ucapan
+                </div>
+                <div class="row g-3 px-4 pb-4">
+                    <div class="col-md-4">
+                        <div class="small text-muted mb-1">Pengirim</div>
+                        <div class="fw-semibold">{{ $sale->pengirim ?? '-' }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="small text-muted mb-1">Penerima</div>
+                        <div class="fw-semibold">{{ $sale->penerima ?? '-' }}</div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="small text-muted mb-1">Pesan</div>
+                        <div class="fw-semibold" style="white-space: pre-wrap;">{{ $sale->kartu_ucapan ?? '-' }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card custom-card mb-4">
+                <div class="card-header bg-white border-0 py-3 px-4 fw-bold fs-5" style="color: #581845;">
+                    <i class="bi bi-flower1 me-2" style="color: #9b2246;"></i> Request
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4 py-3">Jenis Bunga</th>
+                                <th class="py-3 text-center">Jumlah Tangkai</th>
+                                <th class="py-3 text-end pe-4">Harga / Tangkai</th>
+                                <th class="py-3">Hiasan</th>
+                                <th class="py-3 text-end pe-4">Biaya</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-4 fw-semibold">{{ $sale->bunga ?? '-' }}</td>
+                                <td class="text-center fw-semibold">{{ $sale->jumlah_tangkai ?? '-' }}</td>
+                                <td class="text-end pe-4 fw-semibold">Rp {{ number_format((float) ($sale->harga_per_tangkai ?? 0), 0, ',', '.') }}</td>
+                                <td class="fw-semibold">{{ $sale->hiasan ?? '-' }}</td>
+                                <td class="text-end pe-4 fw-semibold" style="color: #9b2246;">Rp {{ number_format($sale->biaya_kartu_ucapan ?? 0, 0, ',', '.') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
+        <div class="card custom-card">
             <!-- Rincian Aktivitas Pembayaran & Kembalian di Layar -->
             <div class="p-4 bg-light border-top">
                 <div class="row justify-content-end">

@@ -258,9 +258,17 @@
 
                     <!-- Bagian Footer / Checkout -->
                     <div class="card-footer bg-light border-0 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted fw-semibold">Subtotal Produk:</span>
+                            <span id="subtotal-produk">Rp {{ number_format($sale->itemPenjualan->sum('subtotal'), 0, ',', '.') }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted fw-semibold">Biaya Kartu Ucapan:</span>
+                            <span id="biaya-kartu-ucapan">Rp 0</span>
+                        </div>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted fw-semibold">Total Pembayaran:</span>
-                            <span class="total-display">Rp {{ number_format($sale->itemPenjualan->sum('subtotal'), 0, ',', '.') }}</span>
+                            <span class="total-display" id="total-pembayaran-form">Rp {{ number_format($sale->itemPenjualan->sum('subtotal'), 0, ',', '.') }}</span>
                         </div>
 
                         <!-- Form Checkout -->
@@ -287,6 +295,66 @@
                                            placeholder="Nominal Uang" 
                                            required
                                            oninput="hitungKembalian()">
+                                </div>
+                            </div>
+
+                            <div id="qrisBox" class="d-none mb-3">
+                                <div class="border rounded-4 p-3 bg-white text-center shadow-sm">
+                                    <div class="small fw-semibold text-muted mb-2">Pembayaran QRIS</div>
+                                    <img id="qrisImage" src="" alt="QRIS pembayaran" class="img-fluid mx-auto d-block" style="max-width: 220px; border-radius: 12px;">
+                                    <div id="qrisTotal" class="mt-3 fw-bold" style="color: #9b2246;">Total: Rp 0</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-3">
+                                <div class="col-12">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="ada_kartu_ucapan" name="ada_kartu_ucapan" value="1" onchange="toggleGreetingCard()">
+                                        <label class="form-check-label fw-semibold" for="ada_kartu_ucapan">Tambah kartu ucapan</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-none" id="kartuUcapanWrapper">
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold">Pengirim</label>
+                                            <input type="text" name="pengirim" id="pengirim" class="form-control rounded-pill px-3" maxlength="100" placeholder="Nama pengirim">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold">Penerima</label>
+                                            <input type="text" name="penerima" id="penerima" class="form-control rounded-pill px-3" maxlength="100" placeholder="Nama penerima">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-semibold">Jenis bunga</label>
+                                            <select name="bunga" id="bunga" class="form-select rounded-pill px-3">
+                                                <option value="">Pilih bunga</option>
+                                                <option value="Mawar">Mawar</option>
+                                                <option value="Melati">Melati</option>
+                                                <option value="Tulip">Tulip</option>
+                                                <option value="Lily">Lily</option>
+                                                <option value="Campuran">Campuran</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold">Jumlah tangkai</label>
+                                            <input type="number" name="jumlah_tangkai" id="jumlah_tangkai" min="1" max="100" class="form-control rounded-pill px-3" placeholder="Contoh: 12" oninput="updateFlowerPricing()">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold">Harga / tangkai</label>
+                                            <input type="number" name="harga_per_tangkai" id="harga_per_tangkai" min="0" step="1000" class="form-control rounded-pill px-3" placeholder="Rp 10000" oninput="updateFlowerPricing()">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold">Hiasan</label>
+                                            <input type="text" name="hiasan" id="hiasan" class="form-control rounded-pill px-3" maxlength="150" placeholder="Contoh: Ribbon merah muda">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold">Estimasi biaya</label>
+                                            <div class="form-control rounded-pill px-3 bg-light text-dark fw-semibold" id="estimasiBiayaBunga">Rp 0</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label small fw-semibold">Pesan kartu ucapan</label>
+                                            <textarea name="kartu_ucapan" id="kartu_ucapan" rows="3" class="form-control rounded-3 px-3" maxlength="255" placeholder="Contoh: Selamat ulang tahun, semoga bahagia!" ></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -323,9 +391,49 @@
 <script>
     const totalPembayaran = parseFloat("{{ $sale->itemPenjualan->sum('subtotal') }}") || 0;
 
+    function getFlowerCost() {
+        const jumlahTangkai = parseInt(document.getElementById('jumlah_tangkai')?.value || 0, 10);
+        const hargaPerTangkai = parseFloat(document.getElementById('harga_per_tangkai')?.value || 0);
+        return jumlahTangkai > 0 ? jumlahTangkai * hargaPerTangkai : 0;
+    }
+
+    function getTotalCheckout() {
+        return totalPembayaran + (document.getElementById('ada_kartu_ucapan')?.checked ? getFlowerCost() : 0);
+    }
+
+    function updateCheckoutSummary() {
+        const subtotal = totalPembayaran;
+        const biayaKartu = document.getElementById('ada_kartu_ucapan')?.checked ? getFlowerCost() : 0;
+        const total = subtotal + biayaKartu;
+
+        document.getElementById('subtotal-produk').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal);
+        document.getElementById('biaya-kartu-ucapan').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(biayaKartu);
+        document.getElementById('total-pembayaran-form').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+        updateQrisDisplay();
+    }
+
+    function updateQrisDisplay() {
+        const method = document.getElementById('payment_method')?.value || 'CASH';
+        const qrisBox = document.getElementById('qrisBox');
+        const qrisImage = document.getElementById('qrisImage');
+        const qrisTotal = document.getElementById('qrisTotal');
+        const total = getTotalCheckout();
+
+        if (method === 'QRIS') {
+            const totalRounded = Math.max(0, Math.round(total));
+            const payload = `QRIS-${totalRounded}-HANIFA-FLORIST`;
+            qrisImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+            qrisTotal.textContent = 'Total: Rp ' + new Intl.NumberFormat('id-ID').format(totalRounded);
+            qrisBox.classList.remove('d-none');
+        } else {
+            qrisBox.classList.add('d-none');
+        }
+    }
+
     function hitungKembalian() {
         const bayarInput = parseFloat(document.getElementById('bayar').value) || 0;
-        const kembalian = bayarInput - totalPembayaran;
+        const totalCheckout = getTotalCheckout();
+        const kembalian = bayarInput - totalCheckout;
         const display = document.getElementById('text-kembalian');
 
         if (bayarInput === 0) {
@@ -343,31 +451,91 @@
     function toggleCashInput() {
         const method = document.getElementById('payment_method').value;
         const bayarInput = document.getElementById('bayar');
+        const totalCheckout = getTotalCheckout();
 
         if (method === 'QRIS') {
-            bayarInput.value = totalPembayaran;
+            bayarInput.value = totalCheckout;
             bayarInput.readOnly = true;
         } else {
             bayarInput.readOnly = false;
+            bayarInput.value = '';
         }
+        updateQrisDisplay();
         hitungKembalian();
+    }
+
+    function updateFlowerPricing() {
+        const jumlahTangkai = parseInt(document.getElementById('jumlah_tangkai').value || 0, 10);
+        const hargaPerTangkai = parseFloat(document.getElementById('harga_per_tangkai').value || 0);
+        const estimasi = document.getElementById('estimasiBiayaBunga');
+        const total = jumlahTangkai * hargaPerTangkai;
+
+        estimasi.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(total);
+        updateCheckoutSummary();
+        hitungKembalian();
+    }
+
+    function toggleGreetingCard() {
+        const checkbox = document.getElementById('ada_kartu_ucapan');
+        const wrapper = document.getElementById('kartuUcapanWrapper');
+        const pengirim = document.getElementById('pengirim');
+        const penerima = document.getElementById('penerima');
+        const bunga = document.getElementById('bunga');
+        const jumlahTangkai = document.getElementById('jumlah_tangkai');
+        const hargaPerTangkai = document.getElementById('harga_per_tangkai');
+        const hiasan = document.getElementById('hiasan');
+        const textarea = document.getElementById('kartu_ucapan');
+
+        if (checkbox.checked) {
+            wrapper.classList.remove('d-none');
+            pengirim.required = true;
+            penerima.required = true;
+            bunga.required = true;
+            jumlahTangkai.required = true;
+            hargaPerTangkai.required = true;
+            hiasan.required = true;
+            textarea.required = true;
+            updateFlowerPricing();
+            pengirim.focus();
+        } else {
+            wrapper.classList.add('d-none');
+            pengirim.required = false;
+            penerima.required = false;
+            bunga.required = false;
+            jumlahTangkai.required = false;
+            hargaPerTangkai.required = false;
+            hiasan.required = false;
+            textarea.required = false;
+            pengirim.value = '';
+            penerima.value = '';
+            bunga.value = '';
+            jumlahTangkai.value = '';
+            hargaPerTangkai.value = '';
+            hiasan.value = '';
+            textarea.value = '';
+            document.getElementById('estimasiBiayaBunga').textContent = 'Rp 0';
+            updateCheckoutSummary();
+            hitungKembalian();
+        }
     }
 
     function validateCheckout() {
         const method = document.getElementById('payment_method').value;
         const bayarInput = parseFloat(document.getElementById('bayar').value) || 0;
+        const hasGreetingCard = document.getElementById('ada_kartu_ucapan')?.checked;
+        const totalCheckout = getTotalCheckout();
 
         if (!method) {
             alert('Silakan pilih metode pembayaran terlebih dahulu!');
             return false;
         }
 
-        if (totalPembayaran <= 0) {
+        if (totalPembayaran <= 0 && !hasGreetingCard) {
             alert('Keranjang belanja masih kosong!');
             return false;
         }
 
-        if (method === 'CASH' && bayarInput < totalPembayaran) {
+        if (method === 'CASH' && bayarInput < totalCheckout) {
             alert('Uang pembayaran masih kurang!');
             return false;
         }

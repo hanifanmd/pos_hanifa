@@ -78,7 +78,7 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
       <div class="container-fluid px-3">
         <!-- LINK DISINI DIUBAH KE ROUTE ABOUT -->
-        <a class="navbar-brand" href="{{ route('profil') }}">🌷 Blossom POS</a>
+        <a class="navbar-brand" href="{{ route('profil') }}">🌷 hanifaflowers</a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -104,7 +104,11 @@
 
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('penjualan.*') ? 'active' : '' }}" href="{{ route('penjualan.index') }}">Penjualan</a>
-            </li> 
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('penjualan.rekap') ? 'active' : '' }}" href="{{ route('penjualan.rekap') }}">Rekap Penjualan</a>
+            </li>
 
             <li class="nav-item">
                <a class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">Tentang Kami</a>
